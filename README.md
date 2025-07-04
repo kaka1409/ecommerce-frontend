@@ -1,14 +1,17 @@
-# ecommerce-frontend
+# Ecommerce-frontend
 
-This template should help get you started developing with Vue 3 in Vite.
+This repository contains frontend code for the CheapSeap mobile app.
 
-## Recommended IDE Setup
+## Technologies
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- Frontend framework: [Vue](https://vuejs.org/)
+- CSS framework: [TailwindCSS](https://tailwindcss.com/)
+- Build tool: [Vite](https://vitejs.dev/)
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
+## Project Installation
+```
+git clone https://github.com/kaka1409/ecommerce-frontend.git
+```
 
 ## Project Setup
 
@@ -33,3 +36,15 @@ npm run build
 ```sh
 npm run lint
 ```
+
+## Project Structure
+
+```
+Mobile app
+├── README.md
+├── package.json
+├── src
+│   ├── App.vue
+```
+
+##
