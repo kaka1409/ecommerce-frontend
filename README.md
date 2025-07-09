@@ -1,6 +1,6 @@
 # Ecommerce-frontend
 
-This repository contains frontend code for the CheapSeap mobile app.
+This repository contains frontend code for the CheapDeal mobile app.
 
 ## Technologies
 
@@ -41,10 +41,27 @@ npm run lint
 
 ```
 Mobile app
-├── README.md
-├── package.json
+├── public
+|   ├── favicon.ico
 ├── src
 │   ├── App.vue
+│   ├── main.js
+│   ├── assets
+│   │   ├── main.css
+│   ├── router
+│   │   ├── index.js
+│   ├── views
+│   │   ├── HomeView.vue
+│   │   ├── LoginView.vue
+│   │   ├── ...
+│   ├── components
+│   │   ├── ProductItem.vue
+│   │   ├── Cart.vue
+|   │   ├── ...
+├── index.html
+├── vite.config.js
+├── README.md
+├── package.json
 ```
 
 ##
