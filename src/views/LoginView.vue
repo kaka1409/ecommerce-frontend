@@ -1,7 +1,6 @@
 <script setup>
   import axios from 'axios';
   import { reactive } from 'vue';
-import { RouterLink } from 'vue-router';
 
   const formData = reactive({
     email: '',
@@ -17,9 +16,11 @@ import { RouterLink } from 'vue-router';
         },
         {
           headers: { 'Content-Type': 'application/json'}
+          // accept: */*
+          // authorization: Bearer ${accesstoken}
         }
       )
-      const data = await response.data
+      const data = await response
 
       if (data) {
         // Success handling here
@@ -330,6 +331,7 @@ import { RouterLink } from 'vue-router';
           type="email"
           name="email"
           placeholder="e.g abc123@gmail.com"
+          autocomplete="off"
         >
 
         <input
@@ -338,6 +340,7 @@ import { RouterLink } from 'vue-router';
           type="password"
           name="password"
           placeholder="Your password"
+          autocomplete="off"
         >
 
         <button
