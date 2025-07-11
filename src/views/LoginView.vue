@@ -1,11 +1,41 @@
 <script setup>
+  // Icons
+  import HeartIcon from '@/assets/icons/HeartIcon.vue';
+  import NextArrowIcon from '@/assets/icons/NextArrowIcon.vue';
+
+  // packages
   import axios from 'axios';
   import { reactive } from 'vue';
+  import { Form, Field, ErrorMessage, useForm } from 'vee-validate';
+  import * as yup from 'yup';
+  import { useToast } from 'vue-toastification';
+
+  // Form rules
+  const schema = yup.object({
+    email:
+      yup.string()
+      .required()
+      .email('Please enter a valid email'),
+
+    password:
+      yup.string()
+      .required('Password is required')
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~])/,
+        'Password must contain uppercase letters, numbers, and special characters'
+      )
+      .min(8, 'Password must be at least 8 characters'),
+  });
+
+  const { meta: formMeta } = useForm({ validationSchema: schema });
 
   const formData = reactive({
     email: '',
-    password: ''
+    password: '',
+    isFormValid: formMeta.value.valid
   })
+
+  const toast = useToast();
 
   const login = async () => {
     try {
@@ -15,22 +45,33 @@
           "password": formData.password
         },
         {
-          headers: { 'Content-Type': 'application/json'}
+          headers: {
+            'Accept': '*/*',
+            'Content-Type': 'application/json'
+          }
           // accept: */*
           // authorization: Bearer ${accesstoken}
         }
       )
       const data = await response
 
-      if (data) {
-        // Success handling here
+      if (data.status === 200) {
+        // Success
 
-        console.log(data)
+        toast.success("Logged in successful")
+
+        // Redirect to home page
+        setTimeout(() => {
+          window.location.href = '/home'
+        }, 1000)
+
       } else {
         // Error handling here
+        toast.error(data.message)
         throw new Error("No data received")
       }
     } catch (error) {
+      toast.error(error.response.data.message)
       throw new Error("Error logging in ", error);
     }
   }
@@ -302,46 +343,44 @@
     </div>
 
     <!-- Login form -->
-    <div class="relative pt-75 z-10">
+    <div class="relative pt-70 z-10">
       <h1
         class="font-nunito-sans text-5xl font-bold text-gray-900 text-left "
       >Login</h1>
 
       <div class="mt-2 mb-10">
         <span class="font-nunito-sans text-gray-900 text-lg">Good to see you back! </span>
-        <!-- Heart Emoji -->
-        <svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1" width="16px" height="15px" class="inline-block">
-          <defs>
-            <pattern id="BGPattern" patternUnits="userSpaceOnUse" alignment="0 0" imageRepeat="None" />
-            <mask fill="white" id="Clip5">
-              <path d="M 16 4.237499785227165  C 16 1.908749683443517  14.073079764061099 0.022500022411078444  11.692309239423873 0  C 11.680770404919903 0  11.665386249986533 0  11.65384837322115 0  C 10.126924785197192 0  8.776925204207824 0.7875000840415441  8.000000957738587 1.9500000747035946  C 7.223078626746526 0.7875000840415441  5.873078088018571 0  4.346154499994613 0  C 4.334616623229231 0  4.319231510557272 0  4.3076936337918905 0  C 1.9269240668932517 0.022500022411078444  0 1.908749683443517  0 4.237499785227165  C 0 5.624999533102533  0.6230767112693508 7.5937502101038605  1.8384618239413097 9.213749956111638  C 4.1538470563305925 12.300001045850328  8.000000957738587 15  8.000000957738587 15  C 8.000000957738587 15  11.846156535189111 12.300001045850328  14.161540330970512 9.213749956111638  C 15.376925922511765 7.5937502101038605  16 5.624999533102533  16 4.237499785227165  Z " fill-rule="evenodd"/>
-            </mask>
-          </defs>
-          <g transform="matrix(1 0 0 1 -220 -412 )">
-            <path d="M 16 4.237499785227165  C 16 1.908749683443517  14.073079764061099 0.022500022411078444  11.692309239423873 0  C 11.680770404919903 0  11.665386249986533 0  11.65384837322115 0  C 10.126924785197192 0  8.776925204207824 0.7875000840415441  8.000000957738587 1.9500000747035946  C 7.223078626746526 0.7875000840415441  5.873078088018571 0  4.346154499994613 0  C 4.334616623229231 0  4.319231510557272 0  4.3076936337918905 0  C 1.9269240668932517 0.022500022411078444  0 1.908749683443517  0 4.237499785227165  C 0 5.624999533102533  0.6230767112693508 7.5937502101038605  1.8384618239413097 9.213749956111638  C 4.1538470563305925 12.300001045850328  8.000000957738587 15  8.000000957738587 15  C 8.000000957738587 15  11.846156535189111 12.300001045850328  14.161540330970512 9.213749956111638  C 15.376925922511765 7.5937502101038605  16 5.624999533102533  16 4.237499785227165  Z " fill-rule="nonzero" fill="rgba(7, 247, 182, 1)" stroke="none" transform="matrix(1 0 0 1 220 412 )" class="fill"/>
-            <path d="M 16 4.237499785227165  C 16 1.908749683443517  14.073079764061099 0.022500022411078444  11.692309239423873 0  C 11.680770404919903 0  11.665386249986533 0  11.65384837322115 0  C 10.126924785197192 0  8.776925204207824 0.7875000840415441  8.000000957738587 1.9500000747035946  C 7.223078626746526 0.7875000840415441  5.873078088018571 0  4.346154499994613 0  C 4.334616623229231 0  4.319231510557272 0  4.3076936337918905 0  C 1.9269240668932517 0.022500022411078444  0 1.908749683443517  0 4.237499785227165  C 0 5.624999533102533  0.6230767112693508 7.5937502101038605  1.8384618239413097 9.213749956111638  C 4.1538470563305925 12.300001045850328  8.000000957738587 15  8.000000957738587 15  C 8.000000957738587 15  11.846156535189111 12.300001045850328  14.161540330970512 9.213749956111638  C 15.376925922511765 7.5937502101038605  16 5.624999533102533  16 4.237499785227165  Z " stroke-width="0" stroke-dasharray="0" stroke="rgba(121, 121, 121, 1)" fill="none" transform="matrix(1 0 0 1 220 412 )" class="stroke" mask="url(#Clip5)"/>
-          </g>
-        </svg>
+        <HeartIcon />
       </div>
 
-      <form @submit.prevent="login">
-        <input
-          class="w-full h-15 p-2 pl-4 bg-[#f0f0f0] rounded-full font-poppins text-lg text-gray-900 focus:outline-none "
-          v-model="formData.email"
-          type="email"
-          name="email"
-          placeholder="e.g abc123@gmail.com"
-          autocomplete="off"
-        >
+      <Form :validation-schema="schema" @submit="login">
+        <div>
+          <Field
+            class="w-full h-15 p-2 pl-4 bg-[#f0f0f0] rounded-full font-poppins text-lg text-gray-900 focus:outline-none "
+            v-model="formData.email"
+            type="email"
+            name="email"
+            placeholder="e.g abc123@gmail.com"
+            autocomplete="off"
+          />
+          <span class="text-white">
+            -<ErrorMessage name="email" class="inline text-red-600 text-sm" />
+          </span>
+        </div>
 
-        <input
-          class="w-full h-15 p-2 mt-4 pl-4 bg-[#f0f0f0] rounded-full font-poppins text-lg text-gray-900 focus:outline-none "
-          v-model="formData.password"
-          type="password"
-          name="password"
-          placeholder="Your password"
-          autocomplete="off"
-        >
+        <div>
+          <Field
+            class="w-full h-15 p-2 pl-4 bg-[#f0f0f0] rounded-full font-poppins text-lg text-gray-900 focus:outline-none "
+            v-model="formData.password"
+            type="password"
+            name="password"
+            placeholder="Your password"
+            autocomplete="off"
+          />
+          <span class="text-white">
+            -<ErrorMessage name="password" class="inline text-red-600 text-sm" />
+          </span>
+        </div>
 
         <button
           class="w-full h-15 p-2 mt-8 bg-[#07f7b6] rounded-full font-poppins font-bold text-xl text-white hover:bg-white-900 "
@@ -365,18 +404,7 @@
           </span>
 
           <div class="flex items-center justify-center w-8 h-8 bg-[#07f7b6] rounded-full ">
-            <svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1" width="14px" height="11px">
-              <defs>
-                <pattern id="BGPattern" patternUnits="userSpaceOnUse" alignment="0 0" imageRepeat="None"/>
-                <mask fill="white" id="Clip21">
-                  <path d="M 14 5.500002763711231  L 8.311406992293996 0  L 7.169025075914857 1.1627928089238728  L 10.805994133684031 4.686045586495535  L 0 4.686045586495535  L 0 6.313952571030311  L 10.805994133684031 6.313952571030311  L 7.169025075914857 9.837209033550282  L 8.311406992293996 11  L 14 5.500002763711231  Z " fill-rule="evenodd"/>
-                </mask>
-              </defs>
-              <g transform="matrix(1 0 0 1 -271 -748 )">
-                <path d="M 14 5.500002763711231  L 8.311406992293996 0  L 7.169025075914857 1.1627928089238728  L 10.805994133684031 4.686045586495535  L 0 4.686045586495535  L 0 6.313952571030311  L 10.805994133684031 6.313952571030311  L 7.169025075914857 9.837209033550282  L 8.311406992293996 11  L 14 5.500002763711231  Z " fill-rule="nonzero" fill="rgba(255, 255, 255, 1)" stroke="none" transform="matrix(1 0 0 1 271 748 )" class="fill"/>
-                <path d="M 14 5.500002763711231  L 8.311406992293996 0  L 7.169025075914857 1.1627928089238728  L 10.805994133684031 4.686045586495535  L 0 4.686045586495535  L 0 6.313952571030311  L 10.805994133684031 6.313952571030311  L 7.169025075914857 9.837209033550282  L 8.311406992293996 11  L 14 5.500002763711231  Z " stroke-width="0" stroke-dasharray="0" stroke="rgba(121, 121, 121, 1)" fill="none" transform="matrix(1 0 0 1 271 748 )" class="stroke" mask="url(#Clip21)"/>
-              </g>
-            </svg>
+            <NextArrowIcon />
           </div>
         </RouterLink>
       </div>

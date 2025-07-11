@@ -2,6 +2,7 @@
 import {createRouter, createWebHistory} from 'vue-router'
 
 import Home from "@/views/HomeView.vue"
+import Setting from "@/views/SettingView.vue"
 import Login from "@/views/LoginView.vue"
 import Register from "@/views/RegisterView.vue"
 
@@ -27,6 +28,11 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: Register
+    },
+    {
+      path: '/setting',
+      name: 'setting',
+      component: Setting
     }
   ]
 })

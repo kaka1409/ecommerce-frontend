@@ -1,6 +1,12 @@
 <script setup>
+  // Icons
+  import BackArrowIcon from '@/assets/icons/BackArrowIcon.vue';
+
+
+  // packages
   import axios from 'axios';
-  import { reactive, ref } from 'vue';
+  import { useToast } from 'vue-toastification';
+  import { reactive } from 'vue';
   import { Form, Field, ErrorMessage, useForm } from 'vee-validate';
   import * as yup from 'yup';
 
@@ -38,8 +44,7 @@
       .required('Date of birth is required'),
 
     location:
-      yup.string()
-      .required('Location is required'),
+      yup.string(),
 
     phone:
       yup.string()
@@ -50,6 +55,7 @@
 
   const state = reactive({
     step: 1,
+    isStep1Valid: false,
     isFormValid: formMeta.value.valid
   })
 
@@ -71,22 +77,11 @@
     phone: ''
   })
 
-  const onSubmit = () => {
-    console.log('form submitted')
-
-    if (state.step === 1) {
-      console.log("set step to 2")
-      setRegisterStep(2)
-    } else if (state.step === 2) {
-      console.log("register")
-      console.log(formData)
-      // register()
-    }
-  }
-
   const setRegisterStep = (step) => {
     state.step = step
   }
+
+  const toast = useToast()
 
   const register = async () => {
     try {
@@ -95,11 +90,11 @@
           "username": formData.username,
           "email": formData.email,
           "password": formData.password,
-          "fullname": formData.fullname,
+          "fullName": formData.fullname,
           "dateOfBirth": formData.dob,
           "gender": formData.gender,
           "address": formData.location,
-          "phone": formData.phone
+          "phoneNumber": formData.phone
         },
         { // HEADERS
           headers: {
@@ -112,18 +107,24 @@
       const data = await response
 
       if (data.status === 200) {
-        // Success handling
-        window.location.href = "/login"
+        // Success
 
-        // Toast message maybe
+        toast.success("Account registered successful")
+
+        // Redirect to login
+        setTimeout(() => {
+          window.location.href = "/login"
+        }, 1000)
 
       } else {
         // Error handling
+        toast.error(data.message)
         throw new Error("No data received")
       }
 
     } catch (error) {
       // Error handling
+      toast.error(error.response.data.message)
       throw new Error("Error making register request", error);
     }
   }
@@ -139,18 +140,7 @@
       to="/login"
       class="relative top-0 left-0 z-10"
     >
-      <svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1" width="25px" height="25px">
-        <defs>
-          <pattern id="BGPattern" patternUnits="userSpaceOnUse" alignment="0 0" imageRepeat="None"/>
-          <mask fill="white" id="Clip67">
-            <path d="M 25 14  L 25 11  L 5.984375 11  L 14.710937499999998 2.2109375  L 12.5 0  L 0 12.5  L 12.5 25  L 14.710937499999998 22.7890625  L 5.984375 14  L 25 14  Z " fill-rule="evenodd"/>
-          </mask>
-        </defs>
-        <g transform="matrix(1 0 0 1 -30 -19 )">
-          <path d="M 25 14  L 25 11  L 5.984375 11  L 14.710937499999998 2.2109375  L 12.5 0  L 0 12.5  L 12.5 25  L 14.710937499999998 22.7890625  L 5.984375 14  L 25 14  Z " fill-rule="nonzero" fill="rgba(0, 0, 0, 1)" stroke="none" transform="matrix(1 0 0 1 30 19 )" class="fill"/>
-          <path d="M 25 14  L 25 11  L 5.984375 11  L 14.710937499999998 2.2109375  L 12.5 0  L 0 12.5  L 12.5 25  L 14.710937499999998 22.7890625  L 5.984375 14  L 25 14  Z " stroke-width="0" stroke-dasharray="0" stroke="rgba(255, 255, 255, 0)" fill="none" transform="matrix(1 0 0 1 30 19 )" class="stroke" mask="url(#Clip67)"/>
-        </g>
-      </svg>
+      <BackArrowIcon />
     </RouterLink>
 
     <!-- Back to step 1 -->
@@ -159,18 +149,7 @@
       @click="setRegisterStep(1)"
       class="block relative top-0 left-0 z-10"
     >
-      <svg xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" version="1.1" width="25px" height="25px">
-        <defs>
-          <pattern id="BGPattern" patternUnits="userSpaceOnUse" alignment="0 0" imageRepeat="None"/>
-          <mask fill="white" id="Clip67">
-            <path d="M 25 14  L 25 11  L 5.984375 11  L 14.710937499999998 2.2109375  L 12.5 0  L 0 12.5  L 12.5 25  L 14.710937499999998 22.7890625  L 5.984375 14  L 25 14  Z " fill-rule="evenodd"/>
-          </mask>
-        </defs>
-        <g transform="matrix(1 0 0 1 -30 -19 )">
-          <path d="M 25 14  L 25 11  L 5.984375 11  L 14.710937499999998 2.2109375  L 12.5 0  L 0 12.5  L 12.5 25  L 14.710937499999998 22.7890625  L 5.984375 14  L 25 14  Z " fill-rule="nonzero" fill="rgba(0, 0, 0, 1)" stroke="none" transform="matrix(1 0 0 1 30 19 )" class="fill"/>
-          <path d="M 25 14  L 25 11  L 5.984375 11  L 14.710937499999998 2.2109375  L 12.5 0  L 0 12.5  L 12.5 25  L 14.710937499999998 22.7890625  L 5.984375 14  L 25 14  Z " stroke-width="0" stroke-dasharray="0" stroke="rgba(255, 255, 255, 0)" fill="none" transform="matrix(1 0 0 1 30 19 )" class="stroke" mask="url(#Clip67)"/>
-        </g>
-      </svg>
+      <BackArrowIcon />
     </button>
 
     <div class="absolute top-0 left-0 z-0">
@@ -314,7 +293,7 @@
       </div>
 
       <!-- Register Form -->
-      <Form :validation-schema="schema" @submit="onSubmit">
+      <Form :validation-schema="schema" @submit="register">
 
         <!-- Step 1 -->
         <div v-show="state.step === 1">
@@ -368,7 +347,7 @@
               name="confirmPassword"
               type="password"
               as="input"
-              placeholder="Enter your confirmPassword"
+              placeholder="Confirm new password"
               autocomplete="off"
               v-model="formData.confirmPassword"
             />
@@ -379,6 +358,7 @@
 
           <button
             class="w-full h-15 p-2 mt-4 bg-[#07f7b6] rounded-full font-poppins font-bold text-xl text-white hover:bg-white-900 "
+            @click="setRegisterStep(2)"
           >Next</button>
         </div>
 
@@ -443,7 +423,7 @@
               class="w-full h-15 p-2 mt-4 pl-4 bg-[#f0f0f0] rounded-full font-poppins text-lg text-gray-900 focus:outline-none "
               name="location"
               as="input"
-              placeholder="Enter your location"
+              placeholder="(OPTIONAL) location "
               autocomplete="off"
               v-model="formData.location"
             />
@@ -457,7 +437,7 @@
               class="w-full h-15 p-2 pl-4 bg-[#f0f0f0] rounded-full font-poppins text-lg text-gray-900 focus:outline-none "
               name="phone"
               as="input"
-              placeholder="Enter your phone"
+              placeholder="e.g 090-234-4567"
               autocomplete="off"
               v-model="formData.phone"
             />
