@@ -39,7 +39,10 @@
 
   const login = async () => {
     try {
-      const response = axios.post('http://100.81.52.73/api/v1/users/login',
+      // Radmin  http://26.16.186.88/api/v1/users/login
+      // Tailscale    http://100.81.52.73/api/v1/users/login
+
+      const response = axios.post('http://26.16.186.88/api/v1/users/login',
         {
           "email": formData.email,
           "password": formData.password
@@ -49,16 +52,22 @@
             'Accept': '*/*',
             'Content-Type': 'application/json'
           }
-          // accept: */*
-          // authorization: Bearer ${accesstoken}
         }
       )
-      const data = await response
+
+      const axiosResponse = await response
+      const data = axiosResponse.data
+
+      // console.log(data)
+      // console.log(data.data)
+      console.log(data.status, data.message, data.accessToken)
 
       if (data.status === 200) {
         // Success
-
         toast.success("Logged in successful")
+
+        // Store access token
+        localStorage.setItem('accessToken', data.accessToken)
 
         // Redirect to home page
         setTimeout(() => {

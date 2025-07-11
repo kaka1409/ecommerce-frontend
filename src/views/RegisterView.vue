@@ -2,7 +2,6 @@
   // Icons
   import BackArrowIcon from '@/assets/icons/BackArrowIcon.vue';
 
-
   // packages
   import axios from 'axios';
   import { useToast } from 'vue-toastification';
@@ -85,7 +84,10 @@
 
   const register = async () => {
     try {
-      const response = axios.post('http://100.81.52.73/api/v1/users/register',
+      // Radmin  http://26.16.186.88/api/v1/users/register
+      // Tailscale    http://100.81.52.73/api/v1/users/register
+
+      const response = axios.post('http://26.16.186.88/api/v1/users/register',
         { // BODY
           "username": formData.username,
           "email": formData.email,
