@@ -10,9 +10,15 @@
   <div class="relative top-0 left-0 w-full h-full">
 
     <div class="flex items-center justify-between  ư-full p-4">
-      <span class="inline block font-black text-2xl">
-        LOGO
-      </span>
+      <div class="flex flex-col gap-0 ">
+        <span class="font-black text-sm">
+          CHEAP
+        </span>
+
+        <span class="inline block font-black text-2xl mt-[-12.5px]">
+          DEAL
+        </span>
+      </div>
 
       <!-- Search -->
       <input
@@ -22,7 +28,9 @@
       >
     </div>
 
-    <ProductList />
+    <ProductList
+      :pageSize="10"
+    />
 
     <NavigationBar />
   </div>

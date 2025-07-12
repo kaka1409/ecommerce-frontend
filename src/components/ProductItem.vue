@@ -1,5 +1,13 @@
 <script setup>
+  import { defineProps } from 'vue';
 
+  const props = defineProps({
+    productObject: Object
+  })
+
+  const limitText = (text, limit) => {
+    return text.length >= limit ? text.substr(0, limit) : text
+  }
 </script>
 
 <template>
@@ -9,16 +17,15 @@
     </div>
 
     <div class="font-nunito-sans font-bold text-lg">
-      Product name
+      {{ limitText(props.productObject.productName, 18) }}
     </div>
 
-    <div class="font-nunito-sans text-xs my-1">
-      Product description lorem ipsum sti abc xyz ...
-      <!-- Should limit text here -->
+    <div class="font-nunito-sans text-xs my-1 min-h-8">
+      {{ limitText(props.productObject.productDescription, 80) }}
     </div>
 
     <div class="font-raleway-bold font-bold">
-      $250.00
+      {{ "$" + props.productObject.price }}
     </div>
   </div>
 </template>
