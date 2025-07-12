@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="20px" height="20px" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id="BGPattern" patternUnits="userSpaceOnUse" alignment="0 0" imageRepeat="None" />
+    <mask fill="white" id="Clip368">
+      <path d="M 0 3  C 0 1.343145728111267  1.343145728111267 0  3 0  C 3 0  17 0  17 0  C 18.656854271888733 0  20 1.343145728111267  20 3  C 20 3  20 17  20 17  C 20 18.656854271888733  18.656854271888733 20  17 20  C 17 20  3 20  3 20  C 1.343145728111267 20  0 18.656854271888733  0 17  C 0 17  0 3  0 3  Z " fill-rule="evenodd" />
+    </mask>
+  </defs>
+  <g transform="matrix(1 0 0 1 -178 -16 )">
+    <path d="M 0 3  C 0 1.343145728111267  1.343145728111267 0  3 0  C 3 0  17 0  17 0  C 18.656854271888733 0  20 1.343145728111267  20 3  C 20 3  20 17  20 17  C 20 18.656854271888733  18.656854271888733 20  17 20  C 17 20  3 20  3 20  C 1.343145728111267 20  0 18.656854271888733  0 17  C 0 17  0 3  0 3  Z " fill-rule="nonzero" fill="rgba(255, 255, 255, 0)" stroke="none" transform="matrix(1 0 0 1 178 16 )" class="fill" />
+    <path d="M 0 3  C 0 1.343145728111267  1.343145728111267 0  3 0  C 3 0  17 0  17 0  C 18.656854271888733 0  20 1.343145728111267  20 3  C 20 3  20 17  20 17  C 20 18.656854271888733  18.656854271888733 20  17 20  C 17 20  3 20  3 20  C 1.343145728111267 20  0 18.656854271888733  0 17  C 0 17  0 3  0 3  Z " stroke-width="4" stroke-dasharray="0" stroke="rgba(0, 0, 0, 1)" fill="none" transform="matrix(1 0 0 1 178 16 )" class="stroke" mask="url(#Clip368)" />
+  </g>
+</svg>
