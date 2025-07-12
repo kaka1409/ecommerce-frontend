@@ -10,6 +10,7 @@
     "lint": "eslint . --fix"
   },
   "dependencies": {
+    "@heroicons/vue": "^2.2.0",
     "axios": "^1.10.0",
     "tailwindcss": "^4.1.10",
     "vee-validate": "^4.15.1",
