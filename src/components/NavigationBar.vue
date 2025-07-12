@@ -19,7 +19,7 @@
 </script>
 
 <template>
-  <div class="absolute bottom-2 flex items-center justify-around w-full">
+  <div class="absolute bottom-0 flex items-center justify-around p-2 w-full rounded-lg bg-white/90 backdrop-blur-md">
     <RouterLink to="/home" class="flex flex-col items-center">
       <div>
         <IconLoader :name="state.isHomePath ? 'HomeIconActive' : 'HomeIcon'"/>
