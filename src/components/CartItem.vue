@@ -1,3 +1,189 @@
+<script setup>
+// export default {
+//   name: "CartItem",
+//   props: {
+//     product: {
+//       type: Object,
+//       required: true,
+//       default: () => (
+//         {
+//           id: 1,
+//           name: "iPhone 15 Pro Max",
+//           image: "/api/placeholder/80/80",
+//           price: 14.0,
+//           variants: ["256 Gb", "512 Gb", "1 Tb"],
+//         },
+//         {
+//           id: 2,
+//           name: "Sample Product",
+//           image: "https://via.placeholder.com/80",
+//           price: 10.0,
+//           variants: ["Variant 1", "Variant 2"],
+//         }
+//       ),
+//     },
+//     initialQuantity: {
+//       type: Number,
+//       default: 1,
+//     },
+//     initialSelected: {
+//       type: Boolean,
+//       default: true,
+//     },
+//   },
+//   data() {
+//     return {
+//       quantity: this.initialQuantity,
+//       isSelected: this.initialSelected,
+//       selectedVariant: this.product.variants ? this.product.variants[0] : "",
+//       showRemoveButton: false,
+//     };
+//   },
+//   methods: {
+//     handleTouchStart(e) {
+//       this.touchStartX = e.touches[0].clientX;
+//     },
+//     handleTouchMove(e) {
+//       this.touchEndX = e.touches[0].clientX;
+//     },
+//     handleTouchEnd() {
+//       const deltaX = this.touchStartX - this.touchEndX;
+//       if (deltaX > 50) {
+//         this.showRemoveButton = true;
+//       } else if (deltaX < -50) {
+//         this.showRemoveButton = false;
+//       }
+//     },
+//     increaseQuantity() {
+//       this.quantity++;
+//       this.onQuantityChange();
+//     },
+//     decreaseQuantity() {
+//       if (this.quantity > 1) {
+//         this.quantity--;
+//         this.onQuantityChange();
+//       }
+//     },
+//     onQuantityChange() {
+//       this.$emit("quantity-changed", {
+//         productId: this.product.id,
+//         quantity: this.quantity,
+//       });
+//     },
+//     onSelectionChange() {
+//       this.$emit("selection-changed", {
+//         productId: this.product.id,
+//         selected: this.isSelected,
+//       });
+//     },
+//     onChangeClick() {
+//       this.$emit("change-clicked", this.product.id);
+//     },
+//     removeItem() {
+//       this.$emit("remove", this.product.id);
+//     },
+//     toggleRemoveButton() {
+//       this.showRemoveButton = !this.showRemoveButton;
+//     },
+//   },
+// };
+
+  //packages
+  import { defineProps } from 'vue';
+
+  const props = defineProps({
+    product: {
+      type: Object,
+      required: true,
+      default: () => ({
+        id: 1,
+        name: 'iPhone 15 Pro Max',
+        image: '/api/placeholder/80/80',
+        price: 14.0,
+        variants: ['256 Gb', '512 Gb', '1 Tb'],
+      }),
+    },
+    initialQuantity: {
+      type: Number,
+      default: 1,
+    },
+    initialSelected: {
+      type: Boolean,
+      default: true,
+    },
+  })
+
+  const emit = defineEmits([
+    'quantity-changed',
+    'selection-changed',
+    'change-clicked',
+    'remove',
+  ])
+
+  const quantity = (props.initialQuantity)
+  const isSelected = (props.initialSelected)
+  const selectedVariant = (props.product.variants?.[0] || '')
+  const showRemoveButton = (false)
+
+  let touchStartX = 0
+  let touchEndX = 0
+
+  function handleTouchStart(e) {
+    touchStartX = e.touches[0].clientX
+  }
+
+  function handleTouchMove(e) {
+    touchEndX = e.touches[0].clientX
+  }
+
+  function handleTouchEnd() {
+    const deltaX = touchStartX - touchEndX
+    if (deltaX > 50) {
+      showRemoveButton.value = true
+    } else if (deltaX < -50) {
+      showRemoveButton.value = false
+    }
+  }
+
+  function increaseQuantity() {
+    quantity.value++
+    onQuantityChange()
+  }
+
+  function decreaseQuantity() {
+    if (quantity.value > 1) {
+      quantity.value--
+      onQuantityChange()
+    }
+  }
+
+  function onQuantityChange() {
+    emit('quantity-changed', {
+      productId: props.product.id,
+      quantity: quantity.value,
+    })
+  }
+
+  function onSelectionChange() {
+    emit('selection-changed', {
+      productId: props.product.id,
+      selected: isSelected.value,
+    })
+  }
+
+  function onChangeClick() {
+    emit('change-clicked', props.product.id)
+  }
+
+  function removeItem() {
+    emit('remove', props.product.id)
+  }
+
+  function toggleRemoveButton() {
+    showRemoveButton.value = !showRemoveButton.value
+  }
+</script>
+
 <template>
   <div class="cart-item-container rounded-lg shadow-sm relative overflow-hidden">
     <!-- Remove Button -->
@@ -99,96 +285,7 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "CartItem",
-  props: {
-    product: {
-      type: Object,
-      required: true,
-      default: () => (
-        {
-          id: 1,
-          name: "iPhone 15 Pro Max",
-          image: "/api/placeholder/80/80",
-          price: 14.0,
-          variants: ["256 Gb", "512 Gb", "1 Tb"],
-        },
-        {
-          id: 2,
-          name: "Sample Product",
-          image: "https://via.placeholder.com/80",
-          price: 10.0,
-          variants: ["Variant 1", "Variant 2"],
-        }
-      ),
-    },
-    initialQuantity: {
-      type: Number,
-      default: 1,
-    },
-    initialSelected: {
-      type: Boolean,
-      default: true,
-    },
-  },
-  data() {
-    return {
-      quantity: this.initialQuantity,
-      isSelected: this.initialSelected,
-      selectedVariant: this.product.variants ? this.product.variants[0] : "",
-      showRemoveButton: false,
-    };
-  },
-  methods: {
-    handleTouchStart(e) {
-      this.touchStartX = e.touches[0].clientX;
-    },
-    handleTouchMove(e) {
-      this.touchEndX = e.touches[0].clientX;
-    },
-    handleTouchEnd() {
-      const deltaX = this.touchStartX - this.touchEndX;
-      if (deltaX > 50) {
-        this.showRemoveButton = true;
-      } else if (deltaX < -50) {
-        this.showRemoveButton = false;
-      }
-    },
-    increaseQuantity() {
-      this.quantity++;
-      this.onQuantityChange();
-    },
-    decreaseQuantity() {
-      if (this.quantity > 1) {
-        this.quantity--;
-        this.onQuantityChange();
-      }
-    },
-    onQuantityChange() {
-      this.$emit("quantity-changed", {
-        productId: this.product.id,
-        quantity: this.quantity,
-      });
-    },
-    onSelectionChange() {
-      this.$emit("selection-changed", {
-        productId: this.product.id,
-        selected: this.isSelected,
-      });
-    },
-    onChangeClick() {
-      this.$emit("change-clicked", this.product.id);
-    },
-    removeItem() {
-      this.$emit("remove", this.product.id);
-    },
-    toggleRemoveButton() {
-      this.showRemoveButton = !this.showRemoveButton;
-    },
-  },
-};
-</script>
+
 
 <style scoped>
 .cart-item-container {
