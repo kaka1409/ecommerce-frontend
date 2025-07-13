@@ -1,3 +1,7 @@
+<script setup>
+  import BackArrowIcon from "@/assets/icons/BackArrowIcon.vue";
+</script>
+
 <template>
   <header
     class="bg-white shadow-md mb-[22px] w-full h-[89px] flex items-center justify-betweens px-[19px]"
@@ -11,6 +15,3 @@
   </header>
 </template>
 
-<script setup>
-import BackArrowIcon from "@/assets/icons/BackArrowIcon.vue";
-</script>

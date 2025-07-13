@@ -1,95 +1,7 @@
 <script setup>
-// export default {
-//   name: "CartItem",
-//   props: {
-//     product: {
-//       type: Object,
-//       required: true,
-//       default: () => (
-//         {
-//           id: 1,
-//           name: "iPhone 15 Pro Max",
-//           image: "/api/placeholder/80/80",
-//           price: 14.0,
-//           variants: ["256 Gb", "512 Gb", "1 Tb"],
-//         },
-//         {
-//           id: 2,
-//           name: "Sample Product",
-//           image: "https://via.placeholder.com/80",
-//           price: 10.0,
-//           variants: ["Variant 1", "Variant 2"],
-//         }
-//       ),
-//     },
-//     initialQuantity: {
-//       type: Number,
-//       default: 1,
-//     },
-//     initialSelected: {
-//       type: Boolean,
-//       default: true,
-//     },
-//   },
-//   data() {
-//     return {
-//       quantity: this.initialQuantity,
-//       isSelected: this.initialSelected,
-//       selectedVariant: this.product.variants ? this.product.variants[0] : "",
-//       showRemoveButton: false,
-//     };
-//   },
-//   methods: {
-//     handleTouchStart(e) {
-//       this.touchStartX = e.touches[0].clientX;
-//     },
-//     handleTouchMove(e) {
-//       this.touchEndX = e.touches[0].clientX;
-//     },
-//     handleTouchEnd() {
-//       const deltaX = this.touchStartX - this.touchEndX;
-//       if (deltaX > 50) {
-//         this.showRemoveButton = true;
-//       } else if (deltaX < -50) {
-//         this.showRemoveButton = false;
-//       }
-//     },
-//     increaseQuantity() {
-//       this.quantity++;
-//       this.onQuantityChange();
-//     },
-//     decreaseQuantity() {
-//       if (this.quantity > 1) {
-//         this.quantity--;
-//         this.onQuantityChange();
-//       }
-//     },
-//     onQuantityChange() {
-//       this.$emit("quantity-changed", {
-//         productId: this.product.id,
-//         quantity: this.quantity,
-//       });
-//     },
-//     onSelectionChange() {
-//       this.$emit("selection-changed", {
-//         productId: this.product.id,
-//         selected: this.isSelected,
-//       });
-//     },
-//     onChangeClick() {
-//       this.$emit("change-clicked", this.product.id);
-//     },
-//     removeItem() {
-//       this.$emit("remove", this.product.id);
-//     },
-//     toggleRemoveButton() {
-//       this.showRemoveButton = !this.showRemoveButton;
-//     },
-//   },
-// };
 
   //packages
-  import { defineProps } from 'vue';
+  import { defineProps, ref } from 'vue';
 
   const props = defineProps({
     product: {
@@ -120,23 +32,23 @@
     'remove',
   ])
 
-  const quantity = (props.initialQuantity)
-  const isSelected = (props.initialSelected)
-  const selectedVariant = (props.product.variants?.[0] || '')
-  const showRemoveButton = (false)
+  const quantity = ref(props.initialQuantity)
+  const isSelected = ref(props.initialSelected)
+  const selectedVariant = ref(props.product.variants?.[0] || '')
+  const showRemoveButton = ref(false)
 
   let touchStartX = 0
   let touchEndX = 0
 
-  function handleTouchStart(e) {
+  const handleTouchStart = (e) => {
     touchStartX = e.touches[0].clientX
   }
 
-  function handleTouchMove(e) {
+  const handleTouchMove = (e) => {
     touchEndX = e.touches[0].clientX
   }
 
-  function handleTouchEnd() {
+  const handleTouchEnd = () => {
     const deltaX = touchStartX - touchEndX
     if (deltaX > 50) {
       showRemoveButton.value = true
@@ -145,47 +57,47 @@
     }
   }
 
-  function increaseQuantity() {
+  const increaseQuantity = () => {
     quantity.value++
     onQuantityChange()
   }
 
-  function decreaseQuantity() {
+  const decreaseQuantity = () => {
     if (quantity.value > 1) {
       quantity.value--
       onQuantityChange()
     }
   }
 
-  function onQuantityChange() {
+  const onQuantityChange = () => {
     emit('quantity-changed', {
       productId: props.product.id,
       quantity: quantity.value,
     })
   }
 
-  function onSelectionChange() {
+  const onSelectionChange = () => {
     emit('selection-changed', {
       productId: props.product.id,
       selected: isSelected.value,
     })
   }
 
-  function onChangeClick() {
+  const onChangeClick = () => {
     emit('change-clicked', props.product.id)
   }
 
-  function removeItem() {
+  const removeItem = () => {
     emit('remove', props.product.id)
   }
 
-  function toggleRemoveButton() {
-    showRemoveButton.value = !showRemoveButton.value
-  }
+  // const toggleRemoveButton = () => {
+  //   showRemoveButton.value = !showRemoveButton.value
+  // }
 </script>
 
 <template>
-  <div class="cart-item-container rounded-lg shadow-sm relative overflow-hidden">
+  <div class="cart-item-container rounded-lg shadow-sm relative overflow-hidden" >
     <!-- Remove Button -->
     <div
       class="absolute right-0 top-0 bottom-0 w-[97px] bg-red-500 text-white flex items-center justify-center font-poppins transition-all duration-300 z-0"
@@ -216,15 +128,20 @@
         </div>
       </div>
       <div class="flex items-center py-3 mr-[19px] relative overflow-hidden">
-        <div class="checkbox-container ml-[12px] mr-[12px]">
+        <div class="relative flex items-center ml-3 mr-3">
           <input
             type="checkbox"
             v-model="isSelected"
-            class="checkbox"
+            class="opacity-0 absolute w-5 h-5 p-0.5 rounded cursor-pointer"
             @change="onSelectionChange"
           />
-          <div class="checkbox-custom">
-            <svg v-if="isSelected" class="checkmark" viewBox="0 0 24 24">
+          <div
+            :class="[
+              'w-6 h-6 border-2 rounded flex items-center justify-center transition-all duration-200 ease-in-out',
+              isSelected ? 'bg-[#07f7b6] border-[#07f7b6]' : 'border-gray-200'
+            ]"
+          >
+            <svg v-if="isSelected" class="w-5 h-5 fill-white" viewBox="0 0 24 24">
               <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
             </svg>
           </div>
@@ -284,57 +201,3 @@
     </div>
   </div>
 </template>
-
-
-
-<style scoped>
-.cart-item-container {
-  position: relative;
-  overflow: hidden;
-}
-</style>
-
-<style scoped>
-.container-2 .checkbox-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin-left: 12px;
-  margin-right: 12px;
-}
-
-.checkbox {
-  opacity: 0;
-  position: absolute;
-  cursor: pointer;
-  width: 20px;
-  height: 20px;
-  padding: 2px 2px 2px 2px;
-  border-radius: 4px;
-  background-color: #07f7b6;
-  box-sizing: border-box;
-}
-
-.checkbox-custom {
-  width: 24px;
-  height: 24px;
-  border: 2px solid #e5e7eb;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: white;
-  transition: all 0.2s ease;
-}
-
-.checkbox:checked + .checkbox-custom {
-  background: #07f7b6;
-  border-color: #07f7b6;
-}
-
-.checkmark {
-  width: 16px;
-  height: 16px;
-  fill: white;
-}
-</style>

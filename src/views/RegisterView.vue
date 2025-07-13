@@ -110,7 +110,6 @@
 
       if (data.status === 200) {
         // Success
-
         toast.success("Account registered successful")
 
         // Redirect to login
