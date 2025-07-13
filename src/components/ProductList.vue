@@ -9,7 +9,7 @@
 
   const state = reactive({
     products: [],
-    pageNo: 0,
+    pageNo: 1,
     pageSize: 10,
     totalPages: 0
   })
@@ -24,12 +24,12 @@
         // Tailscale    http://100.81.52.73/api/v1/products
 
         const accessToken = localStorage.getItem('accessToken')
-        let baseURL = 'http://26.16.186.88/api/v1/products'
-        let params = new URLSearchParams({
+        const baseURL = 'http://26.16.186.88/api/v1/products'
+        const params = new URLSearchParams({
           pageNo: pageNo,
           pageSize: props.pageSize
         })
-        let endPoint = `${baseURL}?${params.toString()}`;
+        const endPoint = `${baseURL}?${params.toString()}`;
 
         if (accessToken) {
           const response = await axios.get(endPoint, {
@@ -45,7 +45,7 @@
           if (data.status === 200) {
 
             state.products = data.data.items
-            state.totalPage = data.data.totalPages
+            state.totalPages = data.data.totalPages
 
           } else {
             // Error handling
@@ -68,16 +68,21 @@
   const nextPage = () => {
     if (state.pageNo < state.totalPages) {
       state.pageNo++
+      listProducts(state.pageNo)
     }
   }
 
   const previousPage = () => {
-    if (state.pageNo < state.totalPages) {
+    if (state.pageNo > 1 && state.pageNo <= state.totalPages) {
       state.pageNo--
+      listProducts(state.pageNo)
     }
   }
 
-  onMounted(listProducts(0))
+  onMounted( () => {
+      listProducts(state.pageNo)
+    }
+  )
 
 </script>
 
@@ -102,34 +107,23 @@
     </div>
 
     <div class="absolute bottom-32 flex items-center justify-center gap-4 left-0 w-full px-4 py-2 bg-white/90 backdrop-blur-md z-10">
-      <div
-        class="flex items-center justify-center w-6.5 h-full rounded-md border-1 border-[#999]"
+      <button
+        class="flex items-center justify-center w-6.5 h-full rounded-md"
         @click="previousPage"
       >
         <ChevronLeftIcon class="w-6 h-6 text-gray-500" />
+      </button>
+
+      <div>
+        <span>{{ state.pageNo }} of {{ state.totalPages }}</span>
       </div>
-      <div
-        class="flex items-center justify-center w-6.5 h-full rounded-md bg-[#07f7b6] text-white font-bold"
-        v-for="index in 2"
-        :key="index"
-      >
-        {{ index }}
-      </div>
-      <!-- <div class="flex items-center justify-center w-6.5 h-full rounded-md border-1 border-[#999] font-semibold">
-        2
-      </div>
-      <div class="flex items-center justify-center w-6.5 h-full rounded-md border-1 border-[#999] font-semibold">
-        ...
-      </div>
-      <div class="flex items-center justify-center w-6.5 h-full rounded-md border-1 border-[#999] font-semibold">
-        10
-      </div> -->
-      <div
-        class="flex items-center justify-center w-6.5 h-full rounded-md border-1 border-[#999] font-semibold hover:bg-red-500"
+
+      <button
+        class="flex items-center justify-center w-6.5 h-full rounded-md "
         @click="nextPage"
       >
         <ChevronRightIcon class="w-6 h-6 text-gray-500" />
-      </div>
+    </button>
     </div>
   </div>
 </template>
