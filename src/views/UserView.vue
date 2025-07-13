@@ -7,5 +7,7 @@
     Me
   </div>
 
+  <RouterLink to="/setting">Settings</RouterLink>
+
   <NavigationBar />
 </template>

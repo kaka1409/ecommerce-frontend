@@ -11,7 +11,7 @@
 </script>
 
 <template>
-  <div class="shadow-md rounded-md p-4">
+  <div class="shadow-md rounded-lg p-4 border-1 border-[#eee]">
     <div class="flex items-center justify-center rounded-md shawdow-lg overflow-hidden w-full h-42">
       <img class="w-full" src="https://m.media-amazon.com/images/I/61NfcHUmxBL._AC_SL1000_.jpg" alt="Product_thumbnail">
     </div>

@@ -2,13 +2,14 @@
   // Icons
   import HeartIcon from '@/assets/icons/HeartIcon.vue';
   import NextArrowIcon from '@/assets/icons/NextArrowIcon.vue';
+  import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/solid'
 
   // packages
+  import { useToast } from 'vue-toastification'; const toast = useToast();
   import axios from 'axios';
-  import { reactive } from 'vue';
+  import { reactive, ref } from 'vue';
   import { Form, Field, ErrorMessage, useForm } from 'vee-validate';
   import * as yup from 'yup';
-  import { useToast } from 'vue-toastification';
 
   // Form rules
   const schema = yup.object({
@@ -20,10 +21,6 @@
     password:
       yup.string()
       .required('Password is required')
-      .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!"#$%&'()*+,-./:;<=>?@[\\\]^_`{|}~])/,
-        'Password must contain uppercase letters, numbers, and special characters'
-      )
       .min(8, 'Password must be at least 8 characters'),
   });
 
@@ -35,7 +32,7 @@
     isFormValid: formMeta.value.valid
   })
 
-  const toast = useToast();
+  const isPasswordVisible = ref(false)
 
   const login = async () => {
     try {
@@ -57,10 +54,6 @@
 
       const axiosResponse = await response
       const data = axiosResponse.data
-
-      // console.log(data)
-      // console.log(data.data)
-      console.log(data.status, data.message, data.accessToken)
 
       if (data.status === 200) {
         // Success
@@ -378,14 +371,25 @@
         </div>
 
         <div>
-          <Field
-            class="w-full h-15 p-2 pl-4 bg-[#f0f0f0] rounded-full font-poppins text-lg text-gray-900 focus:outline-none "
-            v-model="formData.password"
-            type="password"
-            name="password"
-            placeholder="Your password"
-            autocomplete="off"
-          />
+          <div class="flex items-center justify-start bg-[#f0f0f0] rounded-full">
+            <Field
+              class="w-[88%] h-15 p-2 pl-4 font-poppins text-lg text-gray-900 focus:outline-none "
+              v-model="formData.password"
+              :type="isPasswordVisible ? 'text' : 'password'"
+              name="password"
+              placeholder="Your password"
+              autocomplete="off"
+            />
+            <button
+              type="button"
+              @click="isPasswordVisible = !isPasswordVisible"
+            >
+              <component
+                :is="isPasswordVisible ? EyeIcon : EyeSlashIcon"
+                class="h-5 w-5 text-gray-500"
+              />
+            </button>
+          </div>
           <span class="text-white">
             -<ErrorMessage name="password" class="inline text-red-600 text-sm" />
           </span>

@@ -2,12 +2,15 @@
   import StarIcon from '@/assets/icons/StarIcon.vue';
   import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
   import ProductItem from '@/components/ProductItem.vue';
+  import Loading from 'vue-loading-overlay';
+  import 'vue-loading-overlay/dist/css/index.css';
 
   import axios from 'axios'
   import { useToast } from 'vue-toastification'; const toast = useToast()
   import { onMounted, reactive, defineProps } from 'vue';
 
   const state = reactive({
+    isLoading: true,
     products: [],
     pageNo: 1,
     pageSize: 10,
@@ -22,6 +25,9 @@
       try {
         // Radmin  http://26.16.186.88/api/v1/products
         // Tailscale    http://100.81.52.73/api/v1/products
+
+        // show loading
+        state.isLoading = true
 
         const accessToken = localStorage.getItem('accessToken')
         const baseURL = 'http://26.16.186.88/api/v1/products'
@@ -62,6 +68,8 @@
         // Error handling
         toast.error(error.response.data.message)
         throw new Error("Error fetching products list from API", error);
+      } finally {
+        state.isLoading = false
       }
     }
 
@@ -98,12 +106,17 @@
     </div>
 
     <div class="grid grid-cols-2 gap-2 p-4 pt-8 h-175 overflow-y-scroll">
+      <Loading
+        :active="state.isLoading"
+        loader="dots"
+        color="#07f7b6"
+      />
+
       <ProductItem
         v-for="product in state.products"
         :key="product.id"
         :productObject="product"
       />
-
     </div>
 
     <div class="absolute bottom-32 flex items-center justify-center gap-4 left-0 w-full px-4 py-2 bg-white/90 backdrop-blur-md z-10">
