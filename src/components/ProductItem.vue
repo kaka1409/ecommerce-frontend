@@ -8,12 +8,18 @@
   const limitText = (text, limit) => {
     return text.length >= limit ? text.substr(0, limit) : text
   }
+
+  const getThumbnail = () => {
+    return props.productObject.assets[0] ? props.productObject.assets[0].url : ""
+  }
+
+
 </script>
 
 <template>
   <div class="shadow-md rounded-lg p-4 border-1 border-[#eee]">
     <div class="flex items-center justify-center rounded-md shawdow-lg overflow-hidden w-full h-42">
-      <img class="w-full" src="https://m.media-amazon.com/images/I/61NfcHUmxBL._AC_SL1000_.jpg" alt="Product_thumbnail">
+      <img class="w-full" :src="getThumbnail()" alt="Product_thumbnail">
     </div>
 
     <div class="font-nunito-sans font-bold text-lg line-clamp-1">
