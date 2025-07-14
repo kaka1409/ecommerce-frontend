@@ -33,25 +33,6 @@
   }
 </script>
 
-<!-- <script>
-export default {
-  name: "ViewCartCheckout",
-  data() {
-    return {
-      isSelected: this.initialSelected,
-    };
-  },
-  methods: {
-    onSelectionChange() {
-      this.$emit("selection-changed", {
-        productId: this.product.id,
-        selected: this.isSelected,
-      });
-    },
-  },
-};
-</script> -->
-
 <template>
   <div class="bg-white shadow-sm pb-5">
     <!-- Voucher -->

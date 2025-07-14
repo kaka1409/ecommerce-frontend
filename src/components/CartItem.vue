@@ -1,7 +1,9 @@
 <script setup>
 
   //packages
+  import { useToast } from 'vue-toastification'; const toast = useToast()
   import { defineProps, ref } from 'vue';
+  import axios from 'axios';
 
   const props = defineProps({
     product: {
@@ -25,6 +27,7 @@
     },
   })
 
+
   const emit = defineEmits([
     'quantity-changed',
     'selection-changed',
@@ -43,28 +46,43 @@
   let touchStartX = 0
   let touchEndX = 0
 
+  const handleTouchStart = (e) => {
+    touchStartX = e.touches[0].clientX
+  }
+
   const handleTouchMove = (e) => {
     touchEndX = e.touches[0].clientX
+    console.log(e.touches[0].clientX)
   }
 
   const handleTouchEnd = () => {
     const deltaX = touchStartX - touchEndX
-    if (deltaX > 50) {
+    // console.log(touchStartX, touchEndX)
+    touchEndX = 0
+    if (deltaX > 50 && touchEndX !== 0) {
       showRemoveButton.value = true
     } else if (deltaX < -50) {
       showRemoveButton.value = false
     }
   }
 
-  const increaseQuantity = () => {
+  const increaseQuantity = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+
     quantity.value++
     onQuantityChange()
+    changeProductQuantity(quantity.value)
   }
 
-  const decreaseQuantity = () => {
+  const decreaseQuantity = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+
     if (quantity.value > 1) {
       quantity.value--
       onQuantityChange()
+      changeProductQuantity(quantity.value)
     }
   }
 
@@ -90,10 +108,46 @@
     emit('remove', props.product.id)
   }
 
+  const changeProductQuantity = async (quantity) => {
+    try {
+      const accessToken = localStorage.getItem('accessToken')
+
+      if (accessToken) {
+        const response = await axios.put('http://26.16.186.88/api/v1/cart/items',
+          {
+            "cartItemId": props.product.id,
+            "quantity": quantity
+          },
+          { // HEADERS
+            headers: {
+              'Accept': '*/*',
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${accessToken}`,
+            }
+          }
+        )
+
+        const axiosResponse = await response.data
+
+        if (axiosResponse.status === 200) {
+          console.log(axiosResponse.data)
+        } else {
+          toast.error(axiosResponse.message)
+        }
+      } else {
+        toast.error("No access token found")
+        console.error("No access token found, make sure you have an account and logged in")
+      }
+    } catch (error) {
+      toast.error(error.response.data.message)
+      console.error(`Error changing quantity of ${props.product.name}`, error)
+    }
+  }
+
 </script>
 
 <template>
-  <div class="cart-item-container rounded-lg shadow-sm relative overflow-hidden" >
+  <div class="rounded-lg shadow-md relative border-1 border-[#eee] mb-1 overflow-hidden" >
     <!-- Remove Button -->
     <div
       class="absolute right-0 top-0 bottom-0 w-[97px] bg-red-500 text-white flex items-center justify-center font-poppins transition-all duration-300 z-0"
@@ -108,6 +162,7 @@
     <div
       class="cart-item relative z-10 bg-white shadow-sm h-[160px] transition-transform duration-300"
       :class="{ 'translate-x-[-97px]': showRemoveButton }"
+      @touchstart="handleTouchStart"
       @touchmove="handleTouchMove"
       @touchend="handleTouchEnd"
     >
@@ -129,6 +184,7 @@
             v-model="isSelected"
             class="opacity-0 absolute w-5 h-5 p-0.5 rounded cursor-pointer"
             @change="onSelectionChange"
+            @blur=""
           />
           <div
             :class="[
