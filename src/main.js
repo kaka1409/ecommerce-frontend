@@ -3,6 +3,7 @@ import router from '@/router'
 
 import Toast, { POSITION } from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
+import { LoadingPlugin } from 'vue-loading-overlay';
 import { createApp } from 'vue'
 import App from './App.vue'
 
@@ -14,4 +15,5 @@ app.use(Toast, {
   closeOnClick: true,
   pauseOnHover: true,
 })
+app.use(LoadingPlugin);
 app.mount('#app')

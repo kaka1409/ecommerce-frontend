@@ -1,6 +1,7 @@
 <script setup>
   // Icons
   import BackArrowIcon from '@/assets/icons/BackArrowIcon.vue';
+  import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/solid'
 
   // packages
   import axios from 'axios';
@@ -54,7 +55,7 @@
 
   const state = reactive({
     step: 1,
-    isStep1Valid: false,
+    isPasswordVisible: false,
     isFormValid: formMeta.value.valid
   })
 
@@ -327,7 +328,7 @@
             </span>
           </div>
 
-          <div>
+          <!-- <div>
             <Field
               class="w-full h-15 p-2 pl-4 bg-[#f0f0f0] rounded-full font-poppins text-lg text-gray-900 focus:outline-none "
               name="password"
@@ -337,6 +338,31 @@
               autocomplete="off"
               v-model="formData.password"
             />
+            <span class="text-white">
+              -<ErrorMessage name="password" class="inline text-red-600 text-sm" />
+            </span>
+          </div> -->
+
+          <div>
+            <div class="flex items-center justify-start bg-[#f0f0f0] rounded-full">
+              <Field
+                class="w-[88%] h-15 p-2 pl-4 font-poppins text-lg text-gray-900 focus:outline-none "
+                v-model="formData.password"
+                :type="state.isPasswordVisible ? 'text' : 'password'"
+                name="password"
+                placeholder="Your password"
+                autocomplete="off"
+              />
+              <button
+                type="button"
+                @click="state.isPasswordVisible = !state.isPasswordVisible"
+              >
+                <component
+                  :is="state.isPasswordVisible ? EyeIcon : EyeSlashIcon"
+                  class="h-5 w-5 text-gray-500"
+                />
+              </button>
+            </div>
             <span class="text-white">
               -<ErrorMessage name="password" class="inline text-red-600 text-sm" />
             </span>
