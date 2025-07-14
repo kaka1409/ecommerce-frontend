@@ -15,7 +15,9 @@
   <header
     class="bg-white shadow-md mb-[22px] w-full h-[89px] flex items-center justify-betweens px-[19px]"
   >
-    <BackArrowIcon />
+    <RouterLink to="/home">
+      <BackArrowIcon />
+    </RouterLink>
     <div class="flex-1 flex items-center justify-center gap-2">
       <h1 class="text-[24px]">Cart</h1>
       <span class="text-[14px] mt-[2px]">( {{ props.totalItems >= 2 ? props.totalItems + " items" : props.totalItems + " item" }} )</span>

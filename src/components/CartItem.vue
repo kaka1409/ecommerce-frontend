@@ -31,7 +31,7 @@
     'change-clicked',
     'remove',
   ])
-  
+
   const variants = ['256 Gb', '512 Gb', '1 Tb']
 
   const quantity = ref(props.initialQuantity)
@@ -42,10 +42,6 @@
 
   let touchStartX = 0
   let touchEndX = 0
-
-  const handleTouchStart = (e) => {
-    touchStartX = e.touches[0].clientX
-  }
 
   const handleTouchMove = (e) => {
     touchEndX = e.touches[0].clientX
@@ -94,23 +90,6 @@
     emit('remove', props.product.id)
   }
 
-  // const toggleRemoveButton = () => {
-  //   showRemoveButton.value = !showRemoveButton.value
-  // }
-
-  // const updateQuantity = ({ productId, quantity }) => {
-  //   if (cartItem.id === productId) {
-  //     cartItem.quantity = quantity;
-  //   }
-  // }
-
-  // const updateSelection = ({ productId, selected }) => {
-  //   console.log('Prodcut ID:', productId, 'Selected:', selected)
-  // }
-
-  // const handleChangeClick = (productId) => {
-  //   console.log('Change chilcked for Product ID:', productId)
-  // }
 </script>
 
 <template>
@@ -129,7 +108,6 @@
     <div
       class="cart-item relative z-10 bg-white shadow-sm h-[160px] transition-transform duration-300"
       :class="{ 'translate-x-[-97px]': showRemoveButton }"
-      @touchstart="handleTouchStart"
       @touchmove="handleTouchMove"
       @touchend="handleTouchEnd"
     >
