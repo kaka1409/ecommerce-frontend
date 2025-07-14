@@ -1,15 +1,39 @@
-<!-- <script setup>
-const isSelected = ref(props.initialSelected)
+<script setup>
+  import VoucherIcon from '@/assets/icons/VoucherIcon.vue';
 
-const onSelectionChange = () => {
-  emit('selection-changed', {
-    productId: props.product.id,
-    selected: isSelected.value,
+  import { defineProps, ref, defineEmits } from 'vue';
+
+  const props = defineProps({
+    initialSelected: {
+      type: Boolean,
+      default: true,
+    },
+    totalItemsSelected: {
+      type: Number,
+      default: 0
+    },
+    totalPrice: {
+      type: Number,
+      default: 0
+    }
   })
-}
-</script> -->
 
-<script>
+
+  const emit = defineEmits([
+    'selection-changed',
+  ])
+
+  const isSelected = ref(props.initialSelected)
+
+  const onSelectionChange = () => {
+    emit('selection-changed', {
+      productId: props.product.id,
+      selected: isSelected.value,
+    })
+  }
+</script>
+
+<!-- <script>
 export default {
   name: "ViewCartCheckout",
   data() {
@@ -26,7 +50,7 @@ export default {
     },
   },
 };
-</script>
+</script> -->
 
 <template>
   <div class="bg-white shadow-sm pb-5">
@@ -36,7 +60,7 @@ export default {
     >
       <div class="flex items-center gap-2 text-gray-800 font-poppins">
         <div class="w-[29px] h-[29px]">
-          <img src="../../images/view_cart/u2324.png" alt="" />
+          <VoucherIcon />
         </div>
         <span class="text-[13px] font-poppin">CheapDeal Voucher</span>
       </div>
@@ -55,9 +79,9 @@ export default {
       <!-- Subtotal -->
       <div class="flex justify-between items-center mb-1">
         <span class="text-sm text-gray-700 font-medium font-poppins">
-          Subtotal (3 items selected) :
+          Subtotal ({{ props.totalItemsSelected >= 2 ? props.totalItemsSelected + " items" : props.totalItemsSelected + " item" }} selected) :
         </span>
-        <span class="text-sm font-semibold text-gray-800 font-poppins">$42,00</span>
+        <span class="text-sm font-semibold text-gray-800 font-poppins">$ {{ totalPrice }}</span>
       </div>
 
       <!-- Total -->

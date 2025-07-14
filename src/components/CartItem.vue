@@ -31,11 +31,14 @@
     'change-clicked',
     'remove',
   ])
+  
+  const variants = ['256 Gb', '512 Gb', '1 Tb']
 
   const quantity = ref(props.initialQuantity)
   const isSelected = ref(props.initialSelected)
-  const selectedVariant = ref(props.product.variants?.[0] || '')
+  const selectedVariant = ref(variants[0])
   const showRemoveButton = ref(false)
+
 
   let touchStartX = 0
   let touchEndX = 0
@@ -94,6 +97,20 @@
   // const toggleRemoveButton = () => {
   //   showRemoveButton.value = !showRemoveButton.value
   // }
+
+  // const updateQuantity = ({ productId, quantity }) => {
+  //   if (cartItem.id === productId) {
+  //     cartItem.quantity = quantity;
+  //   }
+  // }
+
+  // const updateSelection = ({ productId, selected }) => {
+  //   console.log('Prodcut ID:', productId, 'Selected:', selected)
+  // }
+
+  // const handleChangeClick = (productId) => {
+  //   console.log('Change chilcked for Product ID:', productId)
+  // }
 </script>
 
 <template>
@@ -149,9 +166,9 @@
         <!-- Product Image -->
         <div class="w-20 h-20 rounded overflow-hidden flex-shrink-0">
           <img
-            :src="product.image"
+            :src="product.assetUrl"
             :alt="product.name"
-            class="w-full h-full object-cover object-top"
+            class="w-full object-cover object-top"
           />
         </div>
         <div class="flex flex-col ml-3 flex-1">
@@ -164,7 +181,7 @@
               v-model="selectedVariant"
               class="w-20 h-6 text-sm text-gray-500 bg-white border border-gray-400 rounded focus:outline-none focus:border-green-500 font-poppins"
             >
-              <option v-for="variant in product.variants" :key="variant" :value="variant">
+              <option v-for="variant in variants" :key="variant" :value="variant">
                 {{ variant }}
               </option>
             </select>
@@ -183,7 +200,7 @@
               </button>
               <input
                 type="number"
-                v-model.number="quantity"
+                v-model="quantity"
                 class="w-8 h-5 text-center text-xs bg-white border-none focus:outline-none"
                 min="1"
                 @input="onQuantityChange"
