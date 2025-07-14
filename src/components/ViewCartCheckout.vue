@@ -1,3 +1,33 @@
+<!-- <script setup>
+const isSelected = ref(props.initialSelected)
+
+const onSelectionChange = () => {
+  emit('selection-changed', {
+    productId: props.product.id,
+    selected: isSelected.value,
+  })
+}
+</script> -->
+
+<script>
+export default {
+  name: "ViewCartCheckout",
+  data() {
+    return {
+      isSelected: this.initialSelected,
+    };
+  },
+  methods: {
+    onSelectionChange() {
+      this.$emit("selection-changed", {
+        productId: this.product.id,
+        selected: this.isSelected,
+      });
+    },
+  },
+};
+</script>
+
 <template>
   <div class="bg-white shadow-sm pb-5">
     <!-- Voucher -->
@@ -46,14 +76,23 @@
 
     <!-- Select All + Checkout -->
     <div class="flex items-center justify-between border-t border-gray-200 pt-4">
-      <div class="checkbox-container ml-[12px] mr-[12px]">
-        <input type="checkbox" v-model="isSelected" class="checkbox" @change="onSelectionChange" />
-        <div class="checkbox-custom">
-          <svg v-if="isSelected" class="checkmark" viewBox="0 0 24 24">
+      <div class="relative flex items-center ml-3 mr-3">
+        <input
+          type="checkbox"
+          v-model="isSelected"
+          class="opacity-0 absolute w-5 h-5 p-0.5 rounded cursor-pointer"
+          @change="onSelectionChange"
+        />
+        <div
+          :class="[
+            'w-6 h-6 border-2 rounded flex items-center justify-center transition-all duration-200 ease-in-out',
+            isSelected ? 'bg-[#07f7b6] border-[#07f7b6]' : 'border-gray-200'
+          ]"
+        >
+          <svg v-if="isSelected" class="w-5 h-5 fill-white" viewBox="0 0 24 24">
             <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
           </svg>
         </div>
-        <span class="ml-[4px]">Select all</span>
       </div>
       <button
         class="bg-[#06deaa] hover:bg-green-500 transition-colors text-white px-4 py-2 rounded-lg text-sm font-semibold font-poppins"
@@ -64,66 +103,3 @@
   </div>
 </template>
 
-<style scoped>
-.checkbox-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin-left: 12px;
-  margin-right: 12px;
-}
-
-.checkbox {
-  opacity: 0;
-  position: absolute;
-  cursor: pointer;
-  width: 20px;
-  height: 20px;
-  padding: 2px 2px 2px 2px;
-  border-radius: 4px;
-  background-color: #07f7b6;
-  box-sizing: border-box;
-}
-
-.checkbox-custom {
-  width: 24px;
-  height: 24px;
-  border: 2px solid #e5e7eb;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: white;
-  transition: all 0.2s ease;
-}
-
-.checkbox:checked + .checkbox-custom {
-  background: #07f7b6;
-  border-color: #07f7b6;
-}
-
-.checkmark {
-  width: 16px;
-  height: 16px;
-  fill: white;
-}
-</style>
-
-<script>
-export default {
-  name: "ViewCartCheckout",
-  data() {
-    return {
-      isSelected: this.initialSelected,
-    };
-  },
-  methods: {
-    onSelectionChange() {
-      this.$emit("selection-changed", {
-        productId: this.product.id,
-        selected: this.isSelected,
-      });
-    },
-  },
-};
-</script>

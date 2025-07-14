@@ -58,10 +58,6 @@
       const axiosResponse = await response
       const data = axiosResponse.data
 
-      // console.log(data)
-      // console.log(data.data)
-      console.log(data.status, data.message, data.accessToken)
-
       if (data.status === 200) {
         // Success
         toast.success("Logged in successful")
