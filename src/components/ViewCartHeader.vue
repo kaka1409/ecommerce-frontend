@@ -13,7 +13,7 @@
 
 <template>
   <header
-    class="bg-white shadow-md mb-[22px] w-full h-[89px] flex items-center justify-betweens px-[19px]"
+    class="bg-white shadow-md w-full h-[89px] flex items-center justify-betweens px-[19px]"
   >
     <RouterLink to="/home">
       <BackArrowIcon />

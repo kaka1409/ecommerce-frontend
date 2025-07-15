@@ -1,21 +1,32 @@
 <script setup>
   import CartItem from './CartItem.vue';
 
-  import { reactive, onMounted, defineEmits } from 'vue';
+  import { reactive, onMounted, defineEmits, defineProps, watch } from 'vue';
   import axios from 'axios';
+  import Loading from 'vue-loading-overlay';
+  import 'vue-loading-overlay/dist/css/index.css';
   import { useToast } from 'vue-toastification'; const toast = useToast()
+
+  const props = defineProps({
+    isRemovingItems: {
+      type: Boolean,
+      default: false
+    }
+  })
 
   const state = reactive({
     cartItems: [],
     selectedItems: [],
+    isRemovingItems: props.isRemovingItems,
+    itemsToRemove: [],
     isLoading: true
   })
 
   const emits = defineEmits([
     'items-loaded',
-    'selectedItem-changed'
+    'selectedItem-changed',
+    'selectedItemList-changed'
   ])
-
 
   const getCartItems = async () => {
     try {
@@ -31,7 +42,7 @@
         // Success
         const data = res.data.data.cartItems
         state.cartItems = data
-        state.selectedItems = data
+        // state.selectedItems = data
 
         emits('items-loaded', state.cartItems)
       } else {
@@ -48,13 +59,19 @@
     }
   }
 
+  const itemRemoved = (removedItem) => {
+    const indexToRemove = state.cartItems.indexOf(removedItem)
+    state.cartItems.splice(indexToRemove, 1)
+    state.selectedItems = state.cartItems
+  }
+
   onMounted (() => {
     getCartItems()
-    emits('items-loaded', state.cartItems)
+    emits('items-loaded', state.selectedItems)
   })
 
   const seletedItemChanged = (item) => {
-    
+
     if (!item.selected) {
       // Remove the selected item
       state.selectedItems = state.selectedItems.filter(productItem => {
@@ -71,17 +88,49 @@
 
     emits('selectedItem-changed', state.selectedItems)
   }
+
+  // watch change for isRemovingItems
+  watch(() => props.isRemovingItems, (newVal, oldVal) => {
+    state.isRemovingItems = newVal;
+    state.itemsToRemove = [];
+  });
+
+  const selectItemsToRemove = (item) => {
+    let itemsToRemove = state.itemsToRemove
+
+    if (item.isSelected) {
+      // Add product to remove list
+      itemsToRemove.push(item.productId)
+    } else {
+      // Remove product from remove list
+      const indexToRemove = itemsToRemove.indexOf(item.productId)
+      itemsToRemove.splice(indexToRemove, 1)
+    }
+
+    emits('selectedItemList-changed', itemsToRemove)
+  }
+
 </script>
 
 <template>
   <section class="overflow-y-auto flex-1">
+    <Loading
+      :active="state.isLoading"
+      loader="dots"
+      color="#07f7b6"
+    />
+
     <CartItem
       v-for="cartItem in state.cartItems"
       :key="cartItem.id"
       :product="cartItem"
       :initialQuantity="cartItem.quantity"
-      :initialSelected="true"
+      :initialSelected="false"
+      :isRemovingItems="state.isRemovingItems"
+      :is-selected-to-remove="false"
       @selection-changed="seletedItemChanged"
+      @remove="itemRemoved"
+      @selected-to-remove="selectItemsToRemove"
     />
   </section>
 </template>

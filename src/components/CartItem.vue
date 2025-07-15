@@ -1,8 +1,9 @@
 <script setup>
+  import productPlaceholderImg from '@/assets/images/productPlaceholderThumbnail.png'
 
   //packages
   import { useToast } from 'vue-toastification'; const toast = useToast()
-  import { defineProps, ref } from 'vue';
+  import { defineProps, ref, watch } from 'vue';
   import axios from 'axios';
 
   const props = defineProps({
@@ -17,14 +18,26 @@
         variants: ['256 Gb', '512 Gb', '1 Tb'],
       }),
     },
+
     initialQuantity: {
       type: Number,
       default: 1,
     },
+
     initialSelected: {
       type: Boolean,
-      default: true,
+      default: false,
     },
+
+    isRemovingItems: {
+      type: Boolean,
+      default: false
+    },
+
+    isSelectedToRemove: {
+      type: Boolean,
+      default: false
+    }
   })
 
 
@@ -33,33 +46,39 @@
     'selection-changed',
     'change-clicked',
     'remove',
+    'selected-to-remove'
   ])
 
-  const variants = ['256 Gb', '512 Gb', '1 Tb']
+  const variants = ['256 Gb', '512 Gb', '1 Tb'] // hard code for now
 
   const quantity = ref(props.initialQuantity)
-  const isSelected = ref(props.initialSelected)
+  const isSelected = ref(props.initialSelected) // for checkout
   const selectedVariant = ref(variants[0])
   const showRemoveButton = ref(false)
 
+  const isRemovingItems = ref(props.isRemovingItems)
+  const isSelectedToRemove = ref(props.isSelectedToRemove)
+
+  watch(() => props.isRemovingItems, (newVal) => {
+    isRemovingItems.value = newVal;
+    isSelectedToRemove.value = false
+  });
 
   let touchStartX = 0
   let touchEndX = 0
 
-  const handleTouchStart = (e) => {
-    touchStartX = e.touches[0].clientX
-  }
+  // const handleTouchStart = (e) => {
+  //   touchStartX = e.touches[0].clientX
+  // }
 
   const handleTouchMove = (e) => {
     touchEndX = e.touches[0].clientX
-    console.log(e.touches[0].clientX)
   }
 
   const handleTouchEnd = () => {
     const deltaX = touchStartX - touchEndX
     // console.log(touchStartX, touchEndX)
-    touchEndX = 0
-    if (deltaX > 50 && touchEndX !== 0) {
+    if (deltaX > 50) {
       showRemoveButton.value = true
     } else if (deltaX < -50) {
       showRemoveButton.value = false
@@ -86,6 +105,12 @@
     }
   }
 
+  const inputQuantity = () => {
+    quantity.value = parseInt(quantity.value)
+    onQuantityChange()
+    changeProductQuantity(quantity.value)
+  }
+
   const onQuantityChange = () => {
     emit('quantity-changed', {
       productId: props.product.id,
@@ -104,9 +129,27 @@
     emit('change-clicked', props.product.id)
   }
 
+  // remove a specific item (clicking on the remove button)
   const removeItem = () => {
     emit('remove', props.product.id)
+    removeProductFromCart()
   }
+
+  const selectItemToRemove = () => {
+    if (isRemovingItems.value) {
+      // update state
+      isSelectedToRemove.value = !isSelectedToRemove.value
+
+      emit('selected-to-remove', {
+        productId: props.product.id,
+        isSelected: isSelectedToRemove.value,
+      })
+    }
+  }
+
+  // const addItemtoRemoveList = () => {
+  //   itemsToRemove.value.push(props.product.id)
+  // }
 
   const changeProductQuantity = async (quantity) => {
     try {
@@ -130,7 +173,7 @@
         const axiosResponse = await response.data
 
         if (axiosResponse.status === 200) {
-          console.log(axiosResponse.data)
+          console.log(axiosResponse.message)
         } else {
           toast.error(axiosResponse.message)
         }
@@ -144,10 +187,49 @@
     }
   }
 
+  const removeProductFromCart = async () => {
+    try {
+      const accessToken = localStorage.getItem('accessToken')
+
+      if (accessToken) {
+        const response = await axios.delete(`http://26.16.186.88/api/v1/cart/items/${props.product.id}`,
+          { // HEADERS
+            headers: {
+              'Accept': '*/*',
+              'Authorization': `Bearer ${accessToken}`,
+            }
+          }
+        )
+
+        const axiosResponse = await response.data
+
+        if (axiosResponse.status === 200) {
+          toast.success(`${props.product.name} removed from cart`)
+          console.log("Your cart items now", axiosResponse.data)
+        } else {
+          toast.error(axiosResponse.message)
+          console.error("Error removing product from cart".axiosResponse.message)
+        }
+      } else {
+        toast.error("No access token found")
+        console.error("No access token found, make sure you have an account and logged in")
+      }
+    } catch (error) {
+      toast.error(error.response.data.message)
+      console.error(`Error removing ${props.product.name} from cart`, error)
+    }
+  }
+
+
 </script>
 
 <template>
-  <div class="rounded-lg shadow-md relative border-1 border-[#eee] mb-1 overflow-hidden" >
+  <div
+    :class="['rounded-lg shadow-md relative border-1 mb-1 overflow-hidden',
+      isSelectedToRemove ? 'border-2 border-[#06deaa] z-20 opacity-30' : 'opacity-100 border-[#eee]'
+    ]"
+    @click="selectItemToRemove"
+  >
     <!-- Remove Button -->
     <div
       class="absolute right-0 top-0 bottom-0 w-[97px] bg-red-500 text-white flex items-center justify-center font-poppins transition-all duration-300 z-0"
@@ -162,7 +244,6 @@
     <div
       class="cart-item relative z-10 bg-white shadow-sm h-[160px] transition-transform duration-300"
       :class="{ 'translate-x-[-97px]': showRemoveButton }"
-      @touchstart="handleTouchStart"
       @touchmove="handleTouchMove"
       @touchend="handleTouchEnd"
     >
@@ -173,18 +254,21 @@
             @click.prevent="onChangeClick"
             class="text-gray-500 text-xs font-poppins hover:text-blue-500 transition-colors"
           >
-            Change
+            Swipe to <span class="font-light text-red-500">remove</span>
           </a>
         </div>
       </div>
       <div class="flex items-center py-3 mr-[19px] relative overflow-hidden">
-        <div class="relative flex items-center ml-3 mr-3">
+
+        <div
+          class="relative flex items-center ml-3 mr-3"
+          v-show="!isRemovingItems"
+        >
           <input
             type="checkbox"
             v-model="isSelected"
             class="opacity-0 absolute w-5 h-5 p-0.5 rounded cursor-pointer"
             @change="onSelectionChange"
-            @blur=""
           />
           <div
             :class="[
@@ -197,10 +281,11 @@
             </svg>
           </div>
         </div>
+
         <!-- Product Image -->
         <div class="w-20 h-20 rounded overflow-hidden flex-shrink-0">
           <img
-            :src="product.assetUrl"
+            :src="product.assetUrl || productPlaceholderImg"
             :alt="product.name"
             class="w-full object-cover object-top"
           />
@@ -237,14 +322,12 @@
                 v-model="quantity"
                 class="w-8 h-5 text-center text-xs bg-white border-none focus:outline-none"
                 min="1"
-                @input="onQuantityChange"
+                @blur="inputQuantity"
               />
               <button
                 class="w-5 h-5 bg-gray-100 text-gray-500 text-xs font-semibold flex items-center justify-center hover:bg-gray-200"
                 @click="increaseQuantity"
-              >
-                +
-              </button>
+              >+</button>
             </div>
           </div>
         </div>

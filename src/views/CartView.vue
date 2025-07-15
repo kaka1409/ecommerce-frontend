@@ -3,23 +3,35 @@
   import ViewCartHeader from "@/components/ViewCartHeader.vue";
   import ViewCartCheckout from "@/components/ViewCartCheckout.vue";
 
+  import { useToast } from 'vue-toastification'; const toast = useToast()
   import { ref } from 'vue';
+  import axios from 'axios';
 
   const checkout = () => {
     alert('Proceeding to checkout...')
   }
 
+  // for checkout
   const totalItems = ref(0)
   const totalItemsSelected = ref(0)
-  const totalPrice = ref(0)
+  const subTotalPrice = ref(0)
 
-  const calculateTotalPrice = (items) => {
-    return items.reduce((acc, item) => {
-      return acc + item.price
-    }, 0)
+  // for removing items
+  const isRemovingItems = ref(false)
+  const isItemsToRemoveEmpty = ref(true)
+  const isAllItemsToRemoveSelected = ref(false)
+  const itemsToRemove = ref([])
+
+  const updateItemInfo = (items) => {
+    updateCartHeaderTotalItems(items)
   }
 
-  const updateTotalItems = (items) => {
+  const updateChangedItemInfo = (items) => {
+    updateTotalItemsSelected(items)
+    calculateSubTotalPrice(items)
+  }
+
+  const updateCartHeaderTotalItems = (items) => {
     totalItems.value = items.length
   }
 
@@ -27,9 +39,89 @@
     totalItemsSelected.value = items.length
   }
 
+  const calculateSubTotalPrice = (items) => {
+    subTotalPrice.value = items.reduce((acc, item) => {
+      return acc + item.subTotalPrice
+    }, 0)
+  }
+
+  const toggleRemoveMode = () => {
+    isRemovingItems.value = !isRemovingItems.value
+  }
+
+  const handleSelectedItemsToRemoveState = (items) => {
+    itemsToRemove.value = items
+
+    isItemsToRemoveEmpty.value = items.length === 0
+    isAllItemsToRemoveSelected.value = items.length === totalItems.value
+  }
+
+  const deleleSelectedItems = async () => {
+    const itemsToRemoveLength = itemsToRemove.value.length
+
+    let endpoint = 'http://26.16.186.88/api/v1/cart'
+    let body = {}
+
+    // Get the correct endpoint
+    if (itemsToRemoveLength === 1) {
+      // Clear one specific item
+      const itemId = itemsToRemove.value[0]
+
+      endpoint = `http://26.16.186.88/api/v1/cart/items/${itemId}`
+      body = {}
+
+    } else if (itemsToRemoveLength < totalItems.value){
+      // Clear some items
+
+      endpoint = `http://26.16.186.88/api/v1/cart/items`
+      body = {
+        "cartItemIds": [...itemsToRemove.value]
+      }
+
+    } else {
+      // clear all
+      endpoint = `http://26.16.186.88/api/v1/cart`
+      body = {}
+    }
+
+    try {
+      const accessToken = localStorage.getItem('accessToken')
+
+      if (accessToken) {
+        const response = await axios.delete(endpoint,
+          { // CONFIGS
+            data: body,
+            headers: {
+              'Accept': '*/*',
+              'Authorization': `Bearer ${accessToken}`
+            }
+          }
+        )
+
+        const axiosResponse = await response.data
+
+        if (axiosResponse.status === 200) {
+          // Success
+          toast.success("Items removed from cart")
+          console.log("Your cart items now", axiosResponse.data)
+        } else {
+          // Error
+          toast.error(axiosResponse.message)
+          console.log("Error removing items from cart", axiosResponse.message)
+        }
+      } else {
+        // Error
+        toast.error("No access token found")
+        console.error("No access token found, make sure you have an account and logged in")
+      }
+    } catch (error) {
+      // Error
+      toast.error(error.response.data.message)
+      console.error(`Error removing ${itemsToRemoveLength} items from cart`, error)
+    }
+  }
 
 </script>
-
 
 <template>
   <div class="relative h-screen flex flex-col">
@@ -39,23 +131,64 @@
         :totalItems="totalItems"
       />
 
+      <div class="flex items-center justify-between py-2">
+        <div
+          class="block px-4 py-2"
+          v-show="!isRemovingItems"
+        >
+          <button
+            class="float-right text-[#06deaa] font-bold"
+            @click="toggleRemoveMode"
+          >Select</button>
+        </div>
+
+        <div
+          v-show="isRemovingItems"
+          class="flex items-center justify-between text-md w-full"
+        >
+          <button
+            :class="['text-[#06deaa] px-4 py-1',
+              isAllItemsToRemoveSelected ? 'opacity-0' : 'opacity-100'
+            ]"
+          >Select all</button>
+
+          <button
+            class="font-bold px-4 py-2"
+            @click="toggleRemoveMode"
+          >Cancel</button>
+
+          <button
+            :class="['font-bold px-3 py-2 bg-red-500 text-white rounded-md',
+              isItemsToRemoveEmpty ? 'opacity-50' : 'opacity-100'
+            ]"
+            :disabled="isItemsToRemoveEmpty"
+            @click="deleleSelectedItems"
+          >Delete selected</button>
+        </div>
+      </div>
+
       <CartItemList
-        @items-loaded="updateTotalItems"
-        @selectedItem-changed="updateTotalItemsSelected"
+        :isRemovingItems="isRemovingItems"
+        @items-loaded="updateItemInfo"
+        @selectedItem-changed="updateChangedItemInfo"
+        @selectedItemList-changed="handleSelectedItemsToRemoveState"
       />
+
       <div class="bg-white sticky bottom-0">
         <ViewCartCheckout
+          v-show="!isRemovingItems"
           :totalItemsSelected="totalItemsSelected"
+          :subTotalPrice="subTotalPrice"
         />
       </div>
     </div>
 
-    <section class="border-t border-[#ccc] pt-5 text-center">
+    <!-- <section class="border-t border-[#ccc] pt-5 text-center">
       <button
         class="bg-[#007bff] hover:bg-[#0056b3] text-white px-5 py-2.5 border-none cursor-pointer font-semibold rounded"
         @click="checkout"
       >Checkout</button>
-    </section>
+    </section> -->
   </div>
 </template>
 

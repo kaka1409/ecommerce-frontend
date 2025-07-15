@@ -12,7 +12,7 @@
       type: Number,
       default: 0
     },
-    totalPrice: {
+    subTotalPrice: {
       type: Number,
       default: 0
     }
@@ -31,6 +31,12 @@
       selected: isSelected.value,
     })
   }
+
+  const formatSubTotal = (total) => {
+    return Math.ceil(total).toFixed(2)
+  }
+
+
 </script>
 
 <template>
@@ -60,9 +66,9 @@
       <!-- Subtotal -->
       <div class="flex justify-between items-center mb-1">
         <span class="text-sm text-gray-700 font-medium font-poppins">
-          Subtotal ({{ props.totalItemsSelected >= 2 ? props.totalItemsSelected + " items" : props.totalItemsSelected + " item" }} selected) :
+          Subtotal ({{ props.totalItemsSelected >= 2 ? props.totalItemsSelected + " items" : props.totalItemsSelected + " item" }}) :
         </span>
-        <span class="text-sm font-semibold text-gray-800 font-poppins">$ {{ totalPrice }}</span>
+        <span class="text-sm font-semibold text-gray-800 font-poppins">$ {{ formatSubTotal(props.subTotalPrice) }}</span>
       </div>
 
       <!-- Total -->
@@ -102,7 +108,7 @@
       <button
         class="bg-[#06deaa] hover:bg-green-500 transition-colors text-white px-4 py-2 rounded-lg text-sm font-semibold font-poppins"
       >
-        Checkout (3)
+        Checkout ({{ props.totalItemsSelected }})
       </button>
     </div>
   </div>
