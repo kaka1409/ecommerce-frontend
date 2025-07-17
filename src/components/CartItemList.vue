@@ -59,9 +59,8 @@
     }
   }
 
-  const itemRemoved = (removedItem) => {
-    const indexToRemove = state.cartItems.indexOf(removedItem)
-    state.cartItems.splice(indexToRemove, 1)
+  const itemRemoved = (items) => {
+    state.cartItems = items
     state.selectedItems = state.cartItems
   }
 
@@ -120,7 +119,21 @@
       color="#07f7b6"
     />
 
+    <div
+      class="w-full mt-8 flex flex-col items-center justify-center gap-2"
+      v-if="state.cartItems.length === 0"
+    >
+      <span class="w-full text-center text-gray-500 font-poppins font-bold text-lg">
+        Your cart is empty, let's add some products
+      </span>
+      <RouterLink
+        class="px-4 py-2 bg-[#07f7b6] text-sm text-white font-bold rounded-md"
+        to="/home"
+      >Browse products</RouterLink>
+    </div>
+
     <CartItem
+      v-else
       v-for="cartItem in state.cartItems"
       :key="cartItem.id"
       :product="cartItem"

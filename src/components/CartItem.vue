@@ -130,10 +130,10 @@
   }
 
   // remove a specific item (clicking on the remove button)
-  const removeItem = () => {
-    emit('remove', props.product.id)
-    removeProductFromCart()
-  }
+  // const removeItem = () => {
+  //   emit('remove', props.product.id)
+  //   removeProductFromCart()
+  // }
 
   const selectItemToRemove = () => {
     if (isRemovingItems.value) {
@@ -205,7 +205,8 @@
 
         if (axiosResponse.status === 200) {
           toast.success(`${props.product.name} removed from cart`)
-          console.log("Your cart items now", axiosResponse.data)
+          emit('remove', axiosResponse.data.cartItems)
+          console.log("Your cart items now", axiosResponse.data.cartItems)
         } else {
           toast.error(axiosResponse.message)
           console.error("Error removing product from cart".axiosResponse.message)
@@ -237,7 +238,7 @@
         'opacity-100 pointer-events-auto': showRemoveButton,
         'opacity-0 pointer-events-none': !showRemoveButton,
       }"
-      @click="removeItem"
+      @click="removeProductFromCart"
     >
       Remove
     </div>
@@ -262,7 +263,6 @@
 
         <div
           class="relative flex items-center ml-3 mr-3"
-          v-show="!isRemovingItems"
         >
           <input
             type="checkbox"
