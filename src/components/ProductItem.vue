@@ -1,4 +1,7 @@
 <script setup>
+  import productPlaceholderImg from '@/assets/images/productPlaceholderThumbnail.png'
+
+
   import axios from 'axios'
   import { useToast } from 'vue-toastification'; const toast = useToast()
   import { defineProps } from 'vue';
@@ -12,7 +15,7 @@
   }
 
   const getThumbnail = () => {
-    return props.productObject.assets[0] ? props.productObject.assets[0].url : ""
+    return props.productObject.assets[0] ? props.productObject.assets[0].url : productPlaceholderImg
   }
 
   const addToCart = async (e) => {
