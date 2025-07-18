@@ -58,7 +58,7 @@
         >
           Select or input code
         </button>
-        <div class=""><img src="../../images/view_cart/u2328.svg" alt="" /></div>
+        <!-- <div class=""><img src="../../images/view_cart/u2328.svg" alt="" /></div> -->
       </div>
     </div>
 

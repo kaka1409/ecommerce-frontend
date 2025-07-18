@@ -17,6 +17,11 @@ export default defineConfig({
     port: 3000
   },
 
+  devServer: {
+    host: '0.0.0.0',
+    port: 8080
+  },
+
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
