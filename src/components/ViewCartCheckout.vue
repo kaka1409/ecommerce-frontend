@@ -18,7 +18,6 @@
     }
   })
 
-
   const emit = defineEmits([
     'selection-changed',
   ])
@@ -32,8 +31,8 @@
     })
   }
 
-  const formatSubTotal = (total) => {
-    return Math.ceil(total).toFixed(2)
+  const formatTotal = (total) => {
+    return total.toFixed(2)
   }
 
 
@@ -68,7 +67,7 @@
         <span class="text-sm text-gray-700 font-medium font-poppins">
           Subtotal ({{ props.totalItemsSelected >= 2 ? props.totalItemsSelected + " items" : props.totalItemsSelected + " item" }}) :
         </span>
-        <span class="text-sm font-semibold text-gray-800 font-poppins">$ {{ formatSubTotal(props.subTotalPrice) }}</span>
+        <span class="text-sm font-semibold text-gray-800 font-poppins">$ {{ formatTotal(props.subTotalPrice) }}</span>
       </div>
 
       <!-- Total -->
@@ -76,8 +75,8 @@
         <div class="text-lg font-bold font-poppins">Total:</div>
         <div class="text-right flex items-center gap-3">
           <div class="text-xs text-gray-400 font-poppins">
-            <span class="line-through">($42,00)</span>
-            <span> 15% discount</span>
+            <!-- <span class="line-through">($42,00)</span>
+            <span> 15% discount</span> -->
           </div>
 
           <div class="text-2xl font-bold text-gray-800 font-poppins">$35,70</div>

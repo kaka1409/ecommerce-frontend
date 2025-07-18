@@ -56,13 +56,16 @@
     isAllItemsToRemoveSelected.value = items.length === totalItems.value
   }
 
+  const selectAllItems = () => {
+    isAllItemsToRemoveSelected.value = true
+  }
+
   const deleleSelectedItems = async () => {
     const itemsToRemoveLength = itemsToRemove.value.length
 
     let endpoint = 'http://26.16.186.88/api/v1/cart'
     let body = {}
 
-    // Get the correct endpoint
     if (itemsToRemoveLength === 1) {
       // Clear one specific item
       const itemId = itemsToRemove.value[0]
@@ -147,9 +150,10 @@
           class="flex items-center justify-between text-md w-full"
         >
           <button
-            :class="['text-[#06deaa] px-4 py-1',
+            :class="['text-[#06deaa] px-4 py-1 font-bold',
               isAllItemsToRemoveSelected ? 'opacity-0' : 'opacity-100'
             ]"
+            @click="selectAllItems"
           >Select all</button>
 
           <button

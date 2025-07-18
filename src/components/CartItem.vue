@@ -40,7 +40,6 @@
     }
   })
 
-
   const emit = defineEmits([
     'quantity-changed',
     'selection-changed',
@@ -58,11 +57,6 @@
 
   const isRemovingItems = ref(props.isRemovingItems)
   const isSelectedToRemove = ref(props.isSelectedToRemove)
-
-  watch(() => props.isRemovingItems, (newVal) => {
-    isRemovingItems.value = newVal;
-    isSelectedToRemove.value = false
-  });
 
   let touchStartX = 0
   let touchEndX = 0
@@ -90,7 +84,6 @@
     e.stopPropagation()
 
     quantity.value++
-    onQuantityChange()
     changeProductQuantity(quantity.value)
   }
 
@@ -100,22 +93,13 @@
 
     if (quantity.value > 1) {
       quantity.value--
-      onQuantityChange()
       changeProductQuantity(quantity.value)
     }
   }
 
   const inputQuantity = () => {
     quantity.value = parseInt(quantity.value)
-    onQuantityChange()
     changeProductQuantity(quantity.value)
-  }
-
-  const onQuantityChange = () => {
-    emit('quantity-changed', {
-      productId: props.product.id,
-      quantity: quantity.value,
-    })
   }
 
   const onSelectionChange = () => {
@@ -125,9 +109,6 @@
     })
   }
 
-  const onChangeClick = () => {
-    emit('change-clicked', props.product.id)
-  }
 
   // remove a specific item (clicking on the remove button)
   // const removeItem = () => {
@@ -173,6 +154,7 @@
         const axiosResponse = await response.data
 
         if (axiosResponse.status === 200) {
+          emit('quantity-changed', axiosResponse.data.cartItems)
           console.log(axiosResponse.message)
         } else {
           toast.error(axiosResponse.message)
@@ -221,6 +203,10 @@
     }
   }
 
+  watch(() => props.isRemovingItems, (newVal) => {
+    isRemovingItems.value = newVal;
+    isSelectedToRemove.value = false
+  });
 
 </script>
 
@@ -250,15 +236,14 @@
     >
       <div class="flex w-full">
         <div class="ml-auto mt-3 mr-[19px]">
-          <a
-            href="#"
-            @click.prevent="onChangeClick"
-            class="text-gray-500 text-xs font-poppins hover:text-blue-500 transition-colors"
+          <div
+            class="text-gray-500 text-xs font-poppins"
           >
             Swipe to <span class="font-light text-red-500">remove</span>
-          </a>
+          </div>
         </div>
       </div>
+
       <div class="flex items-center py-3 mr-[19px] relative overflow-hidden">
 
         <div
@@ -290,6 +275,7 @@
             class="w-full object-cover object-top"
           />
         </div>
+
         <div class="flex flex-col ml-3 flex-1">
           <!-- Product Details -->
           <h3 class="text-[17px] text-[#262626] font-poppins">
@@ -332,6 +318,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </div>
 </template>

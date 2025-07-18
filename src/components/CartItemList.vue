@@ -28,6 +28,51 @@
     'selectedItemList-changed'
   ])
 
+  const updateQuantity = (items) => {
+    console.log(items)
+
+    state.cartItems = items
+  }
+
+  const itemRemoved = (items) => {
+    state.cartItems = items
+    state.selectedItems = state.cartItems
+  }
+
+  const seletedItemChanged = (item) => {
+
+    if (!item.selected) {
+      // Remove the selected item
+      state.selectedItems = state.selectedItems.filter(productItem => {
+        return productItem.id !== item.productId
+      })
+    } else {
+      // Add the selected item
+      const seletedItem = state.cartItems.find(productItem => {
+        return productItem.id === item.productId
+      })
+
+      state.selectedItems.push(seletedItem)
+    }
+
+    emits('selectedItem-changed', state.selectedItems)
+  }
+
+  const selectItemsToRemove = (item) => {
+    let itemsToRemove = state.itemsToRemove
+
+    if (item.isSelected) {
+      // Add product to remove list
+      itemsToRemove.push(item.productId)
+    } else {
+      // Remove product from remove list
+      const indexToRemove = itemsToRemove.indexOf(item.productId)
+      itemsToRemove.splice(indexToRemove, 1)
+    }
+
+    emits('selectedItemList-changed', itemsToRemove)
+  }
+
   const getCartItems = async () => {
     try {
       const token = localStorage.getItem('accessToken')
@@ -59,55 +104,16 @@
     }
   }
 
-  const itemRemoved = (items) => {
-    state.cartItems = items
-    state.selectedItems = state.cartItems
-  }
-
-  onMounted (() => {
-    getCartItems()
-    emits('items-loaded', state.selectedItems)
-  })
-
-  const seletedItemChanged = (item) => {
-
-    if (!item.selected) {
-      // Remove the selected item
-      state.selectedItems = state.selectedItems.filter(productItem => {
-        return productItem.id !== item.productId
-      })
-    } else {
-      // Add the selected item
-      const seletedItem = state.cartItems.find(productItem => {
-        return productItem.id === item.productId
-      })
-
-      state.selectedItems.push(seletedItem)
-    }
-
-    emits('selectedItem-changed', state.selectedItems)
-  }
-
   // watch change for isRemovingItems
   watch(() => props.isRemovingItems, (newVal, oldVal) => {
     state.isRemovingItems = newVal;
     state.itemsToRemove = [];
   });
 
-  const selectItemsToRemove = (item) => {
-    let itemsToRemove = state.itemsToRemove
-
-    if (item.isSelected) {
-      // Add product to remove list
-      itemsToRemove.push(item.productId)
-    } else {
-      // Remove product from remove list
-      const indexToRemove = itemsToRemove.indexOf(item.productId)
-      itemsToRemove.splice(indexToRemove, 1)
-    }
-
-    emits('selectedItemList-changed', itemsToRemove)
-  }
+  onMounted (() => {
+    getCartItems()
+    emits('items-loaded', state.selectedItems)
+  })
 
 </script>
 
@@ -140,7 +146,8 @@
       :initialQuantity="cartItem.quantity"
       :initialSelected="false"
       :isRemovingItems="state.isRemovingItems"
-      :is-selected-to-remove="false"
+      :isSelectedToRemove="state.itemsToRemove.includes(cartItem.id)"
+      @quantity-changed="updateQuantity"
       @selection-changed="seletedItemChanged"
       @remove="itemRemoved"
       @selected-to-remove="selectItemsToRemove"
