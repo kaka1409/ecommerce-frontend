@@ -76,7 +76,7 @@
       if (error.response) {
         toast.error(error.response.data.message)
       } else {
-        toast.error("Connection timmed out")
+        toast.error("Connection timed out")
       }
       throw new Error("Error logging in ", error);
     }
