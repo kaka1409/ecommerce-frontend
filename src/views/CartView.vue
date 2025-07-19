@@ -7,14 +7,15 @@
   import { ref } from 'vue';
   import axios from 'axios';
 
-  const checkout = () => {
-    alert('Proceeding to checkout...')
-  }
+
 
   // for checkout
   const totalItems = ref(0)
   const totalItemsSelected = ref(0)
   const subTotalPrice = ref(0)
+  const totalPrice = ref(0)
+  // const discount = ref(0) // future
+  const isSelectedAllItems = ref(false)
 
   // for removing items
   const isRemovingItems = ref(false)
@@ -29,6 +30,7 @@
   const updateChangedItemInfo = (items) => {
     updateTotalItemsSelected(items)
     calculateSubTotalPrice(items)
+    calculateTotalPrice()
   }
 
   const updateCartHeaderTotalItems = (items) => {
@@ -45,6 +47,22 @@
     }, 0)
   }
 
+  const calculateTotalPrice = () => {
+    totalPrice.value = subTotalPrice.value
+
+    // Future
+    // otalPrice.value = subTotalPrice.value * discount
+  }
+
+  // Future
+  // const calculateDiscount = () => {}
+
+  const selectAllItems = (selectAllItemsState) => {
+    // console.log(selectAllItemsState)
+
+    isSelectedAllItems.value = selectAllItemsState
+  }
+
   const toggleRemoveMode = () => {
     isRemovingItems.value = !isRemovingItems.value
   }
@@ -56,7 +74,7 @@
     isAllItemsToRemoveSelected.value = items.length === totalItems.value
   }
 
-  const selectAllItems = () => {
+  const selectAllItemsToremove = () => {
     isAllItemsToRemoveSelected.value = true
   }
 
@@ -124,16 +142,20 @@
     }
   }
 
+
 </script>
 
 <template>
   <div class="relative h-screen flex flex-col">
     <div class="absolute inset-0 w-[375px] h-[1218px] m-auto opacity-[0.08] bg-[#797979] pointer-events-none z-[1]"></div>
     <div class="relative flex flex-col h-screen justify-between z-[2]">
+
+      <!-- Header -->
       <ViewCartHeader
         :totalItems="totalItems"
       />
 
+      <!-- Remove Items -->
       <div class="flex items-center justify-between py-2">
         <div
           class="block px-4 py-2"
@@ -153,7 +175,7 @@
             :class="['text-[#06deaa] px-4 py-1 font-bold',
               isAllItemsToRemoveSelected ? 'opacity-0' : 'opacity-100'
             ]"
-            @click="selectAllItems"
+            @click="selectAllItemsToremove"
           >Select all</button>
 
           <button
@@ -171,28 +193,27 @@
         </div>
       </div>
 
+      <!-- Cart item list -->
       <CartItemList
         :isRemovingItems="isRemovingItems"
+        :isSelectedAllItems="isSelectedAllItems"
         @items-loaded="updateItemInfo"
         @selectedItem-changed="updateChangedItemInfo"
         @selectedItemList-changed="handleSelectedItemsToRemoveState"
       />
 
+      <!-- Cart checkout -->
       <div class="bg-white sticky bottom-0">
         <ViewCartCheckout
           v-show="!isRemovingItems"
           :totalItemsSelected="totalItemsSelected"
           :subTotalPrice="subTotalPrice"
+          :totalPrice="totalPrice"
+          @selectAllItems="selectAllItems"
         />
       </div>
     </div>
 
-    <!-- <section class="border-t border-[#ccc] pt-5 text-center">
-      <button
-        class="bg-[#007bff] hover:bg-[#0056b3] text-white px-5 py-2.5 border-none cursor-pointer font-semibold rounded"
-        @click="checkout"
-      >Checkout</button>
-    </section> -->
   </div>
 </template>
 

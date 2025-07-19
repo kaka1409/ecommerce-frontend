@@ -2,39 +2,55 @@
   import VoucherIcon from '@/assets/icons/VoucherIcon.vue';
 
   import { defineProps, ref, defineEmits } from 'vue';
+  import { useToast } from 'vue-toastification'; const toast = useToast()
 
   const props = defineProps({
-    initialSelected: {
+    isSelectedAll: {
       type: Boolean,
-      default: true,
+      default: false,
     },
+
     totalItemsSelected: {
       type: Number,
       default: 0
     },
+
     subTotalPrice: {
+      type: Number,
+      default: 0
+    },
+
+    totalPrice: {
       type: Number,
       default: 0
     }
   })
 
   const emit = defineEmits([
-    'selection-changed',
+    'selectAllItems',
   ])
 
-  const isSelected = ref(props.initialSelected)
+  const isSelected = ref(props.isSelectedAll)
 
-  const onSelectionChange = () => {
-    emit('selection-changed', {
-      productId: props.product.id,
-      selected: isSelected.value,
-    })
+  const selectAllItems = () => {
+    emit('selectAllItems', isSelected.value)
   }
 
   const formatTotal = (total) => {
     return total.toFixed(2)
   }
 
+  const checkout = () => {
+    const totalItems = props.totalItemsSelected
+    const totalPrice = props.totalPrice
+    const subTotalPrice = props.subTotalPrice
+
+    if (totalItems > 0) {
+      window.location.href = `/order?totalItems=${totalItems}&totalPrice=${totalPrice}&subTotalPrice=${subTotalPrice}`
+    } else {
+      toast.warning("Please select an item to checkout")
+    }
+  }
 
 </script>
 
@@ -62,6 +78,7 @@
     </div>
 
     <div class="pl-[12px] pr-[12px]">
+
       <!-- Subtotal -->
       <div class="flex justify-between items-center mb-1">
         <span class="text-sm text-gray-700 font-medium font-poppins">
@@ -79,7 +96,7 @@
             <span> 15% discount</span> -->
           </div>
 
-          <div class="text-2xl font-bold text-gray-800 font-poppins">$35,70</div>
+          <div class="text-2xl font-bold text-gray-800 font-poppins">$ {{ formatTotal(props.totalPrice) }}</div>
         </div>
       </div>
     </div>
@@ -91,7 +108,7 @@
           type="checkbox"
           v-model="isSelected"
           class="opacity-0 absolute w-5 h-5 p-0.5 rounded cursor-pointer"
-          @change="onSelectionChange"
+          @change="selectAllItems"
         />
         <div
           :class="[
@@ -106,6 +123,7 @@
       </div>
       <button
         class="bg-[#06deaa] hover:bg-green-500 transition-colors text-white px-4 py-2 rounded-lg text-sm font-semibold font-poppins"
+        @click="checkout"
       >
         Checkout ({{ props.totalItemsSelected }})
       </button>

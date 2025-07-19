@@ -24,7 +24,7 @@
       default: 1,
     },
 
-    initialSelected: {
+    isSelected: {
       type: Boolean,
       default: false,
     },
@@ -51,7 +51,7 @@
   const variants = ['256 Gb', '512 Gb', '1 Tb'] // hard code for now
 
   const quantity = ref(props.initialQuantity)
-  const isSelected = ref(props.initialSelected) // for checkout
+  const isSelected = ref(props.isSelected) // for checkout
   const selectedVariant = ref(variants[0])
   const showRemoveButton = ref(false)
 
@@ -108,13 +108,6 @@
       selected: isSelected.value,
     })
   }
-
-
-  // remove a specific item (clicking on the remove button)
-  // const removeItem = () => {
-  //   emit('remove', props.product.id)
-  //   removeProductFromCart()
-  // }
 
   const selectItemToRemove = () => {
     if (isRemovingItems.value) {
@@ -207,6 +200,10 @@
     isRemovingItems.value = newVal;
     isSelectedToRemove.value = false
   });
+
+  watch(() => props.isSelected, (newVal) => {
+    isSelected.value = newVal
+  })
 
 </script>
 

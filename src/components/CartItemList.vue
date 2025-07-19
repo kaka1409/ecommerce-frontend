@@ -11,12 +11,18 @@
     isRemovingItems: {
       type: Boolean,
       default: false
+    },
+
+    isSelectedAllItems: {
+      type: Boolean,
+      default: false
     }
   })
 
   const state = reactive({
     cartItems: [],
     selectedItems: [],
+    isSelectedAllItems: props.isSelectedAllItems,
     isRemovingItems: props.isRemovingItems,
     itemsToRemove: [],
     isLoading: true
@@ -29,9 +35,19 @@
   ])
 
   const updateQuantity = (items) => {
-    console.log(items)
-
     state.cartItems = items
+
+    // update quantity in selected items
+    state.selectedItems.forEach(selectedItem => {
+      state.cartItems.forEach(cartItem => {
+        if (cartItem.id === selectedItem.id) {
+          selectedItem.quantity = cartItem.quantity
+          selectedItem.subTotalPrice = cartItem.subTotalPrice
+        }
+      })
+    })
+
+    emits('selectedItem-changed', state.selectedItems)
   }
 
   const itemRemoved = (items) => {
@@ -55,6 +71,15 @@
       state.selectedItems.push(seletedItem)
     }
 
+    emits('selectedItem-changed', state.selectedItems)
+  }
+
+  const selectAllItems = () => {
+    if (state.isSelectedAllItems) {
+      state.selectedItems = state.cartItems
+    } else {
+      state.selectedItems = []
+    }
     emits('selectedItem-changed', state.selectedItems)
   }
 
@@ -110,6 +135,11 @@
     state.itemsToRemove = [];
   });
 
+  watch(() => props.isSelectedAllItems, (newVal, oldVal) => {
+    state.isSelectedAllItems = newVal
+    selectAllItems()
+  });
+
   onMounted (() => {
     getCartItems()
     emits('items-loaded', state.selectedItems)
@@ -144,7 +174,7 @@
       :key="cartItem.id"
       :product="cartItem"
       :initialQuantity="cartItem.quantity"
-      :initialSelected="false"
+      :isSelected="state.isSelectedAllItems"
       :isRemovingItems="state.isRemovingItems"
       :isSelectedToRemove="state.itemsToRemove.includes(cartItem.id)"
       @quantity-changed="updateQuantity"

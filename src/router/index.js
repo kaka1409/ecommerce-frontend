@@ -6,6 +6,7 @@ import Register from "@/views/RegisterView.vue"
 import Home from "@/views/HomeView.vue"
 import ProductView from '@/views/ProductView.vue'
 import Cart from "@/views/CartView.vue"
+import Order from "@/views/OrderView.vue"
 import Wallet from "@/views/WalletView.vue"
 import User from "@/views/UserView.vue"
 import Setting from "@/views/SettingView.vue"
@@ -42,6 +43,11 @@ const router = createRouter({
       path: '/cart',
       name: 'cart',
       component: Cart
+    },
+    {
+      path: '/order',
+      name: 'order',
+      component: Order
     },
     {
       path: '/wallet',
