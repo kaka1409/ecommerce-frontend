@@ -230,7 +230,7 @@ onMounted(() => {
       </div>
 
       <!-- Thumbnails -->
-      <div class="flex overflow-x-auto gap-2 mb-5 px-2" v-if="state.product.assets && state.product.assets.length > 0">
+      <div class="flex overflow-x-scroll gap-2 mb-5 px-2" v-if="state.product.assets && state.product.assets.length > 0">
         <img
           v-for="(asset, index) in state.product.assets"
           :key="asset.id"
