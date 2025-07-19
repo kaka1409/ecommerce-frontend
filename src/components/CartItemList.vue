@@ -8,15 +8,26 @@
   import { useToast } from 'vue-toastification'; const toast = useToast()
 
   const props = defineProps({
+    isSelectedAllItems: {
+      type: Boolean,
+      default: false
+    },
+
     isRemovingItems: {
       type: Boolean,
       default: false
     },
 
-    isSelectedAllItems: {
+    isRemovingAllItems: {
       type: Boolean,
       default: false
+    },
+
+    itemsAfterRemoval: {
+      type: Array,
+      default: () => []
     }
+
   })
 
   const state = reactive({
@@ -24,6 +35,7 @@
     selectedItems: [],
     isSelectedAllItems: props.isSelectedAllItems,
     isRemovingItems: props.isRemovingItems,
+    isRemovingAllItems: props.isRemovingAllItems,
     itemsToRemove: [],
     isLoading: true
   })
@@ -53,6 +65,7 @@
   const itemRemoved = (items) => {
     state.cartItems = items
     state.selectedItems = state.cartItems
+    emits("selectedItem-changed", state.selectedItems)
   }
 
   const seletedItemChanged = (item) => {
@@ -84,11 +97,14 @@
   }
 
   const selectItemsToRemove = (item) => {
+
     let itemsToRemove = state.itemsToRemove
 
     if (item.isSelected) {
       // Add product to remove list
-      itemsToRemove.push(item.productId)
+      if (!itemsToRemove.includes(item.productId)) {
+        itemsToRemove.push(item.productId)
+      }
     } else {
       // Remove product from remove list
       const indexToRemove = itemsToRemove.indexOf(item.productId)
@@ -129,16 +145,27 @@
     }
   }
 
+  watch(() => props.isSelectedAllItems, (newVal, oldVal) => {
+    state.isSelectedAllItems = newVal
+    selectAllItems()
+  });
+
   // watch change for isRemovingItems
   watch(() => props.isRemovingItems, (newVal, oldVal) => {
     state.isRemovingItems = newVal;
     state.itemsToRemove = [];
   });
 
-  watch(() => props.isSelectedAllItems, (newVal, oldVal) => {
-    state.isSelectedAllItems = newVal
-    selectAllItems()
+  // watch change for removing all items
+  watch(() => props.isRemovingAllItems, (newVal, oldVal) => {
+    state.isRemovingAllItems = newVal
   });
+
+  watch(() => props.itemsAfterRemoval, (newVal) => {
+    if (newVal && Array.isArray(newVal)) {
+      state.cartItems = newVal
+    }
+  })
 
   onMounted (() => {
     getCartItems()
@@ -174,9 +201,11 @@
       :key="cartItem.id"
       :product="cartItem"
       :initialQuantity="cartItem.quantity"
+      :inStockQuantity="cartItem.inStockQuantity"
       :isSelected="state.isSelectedAllItems"
       :isRemovingItems="state.isRemovingItems"
-      :isSelectedToRemove="state.itemsToRemove.includes(cartItem.id)"
+      :isSelectedToRemove="false"
+      :isInRemoveAll="state.isRemovingAllItems"
       @quantity-changed="updateQuantity"
       @selection-changed="seletedItemChanged"
       @remove="itemRemoved"

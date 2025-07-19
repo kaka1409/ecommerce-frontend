@@ -73,7 +73,11 @@
         throw new Error("No data received")
       }
     } catch (error) {
-      toast.error(error.response.data.message)
+      if (error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error("Connection timmed out")
+      }
       throw new Error("Error logging in ", error);
     }
   }

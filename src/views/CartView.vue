@@ -7,8 +7,6 @@
   import { ref } from 'vue';
   import axios from 'axios';
 
-
-
   // for checkout
   const totalItems = ref(0)
   const totalItemsSelected = ref(0)
@@ -20,8 +18,9 @@
   // for removing items
   const isRemovingItems = ref(false)
   const isItemsToRemoveEmpty = ref(true)
-  const isAllItemsToRemoveSelected = ref(false)
+  const isAllItemsSelectedToRemove = ref(false)
   const itemsToRemove = ref([])
+  const itemsAfterRemoval = ref([])
 
   const updateItemInfo = (items) => {
     updateCartHeaderTotalItems(items)
@@ -58,8 +57,6 @@
   // const calculateDiscount = () => {}
 
   const selectAllItems = (selectAllItemsState) => {
-    // console.log(selectAllItemsState)
-
     isSelectedAllItems.value = selectAllItemsState
   }
 
@@ -71,14 +68,14 @@
     itemsToRemove.value = items
 
     isItemsToRemoveEmpty.value = items.length === 0
-    isAllItemsToRemoveSelected.value = items.length === totalItems.value
+    isAllItemsSelectedToRemove.value = items.length === totalItems.value
   }
 
-  const selectAllItemsToremove = () => {
-    isAllItemsToRemoveSelected.value = true
+  const selectAllItemsToRemove = () => {
+    isAllItemsSelectedToRemove.value = true
   }
 
-  const deleleSelectedItems = async () => {
+  const deleteSelectedItems = async () => {
     const itemsToRemoveLength = itemsToRemove.value.length
 
     let endpoint = 'http://26.16.186.88/api/v1/cart'
@@ -124,7 +121,8 @@
         if (axiosResponse.status === 200) {
           // Success
           toast.success("Items removed from cart")
-          console.log("Your cart items now", axiosResponse.data)
+          itemsAfterRemoval.value = axiosResponse.data.cartItems
+          console.log("Your cart items now", itemsAfterRemoval.value)
         } else {
           // Error
           toast.error(axiosResponse.message)
@@ -164,7 +162,7 @@
           <button
             class="float-right text-[#06deaa] font-bold"
             @click="toggleRemoveMode"
-          >Select</button>
+          >Select to remove</button>
         </div>
 
         <div
@@ -173,9 +171,9 @@
         >
           <button
             :class="['text-[#06deaa] px-4 py-1 font-bold',
-              isAllItemsToRemoveSelected ? 'opacity-0' : 'opacity-100'
+              isAllItemsSelectedToRemove ? 'opacity-0' : 'opacity-100'
             ]"
-            @click="selectAllItemsToremove"
+            @click="selectAllItemsToRemove"
           >Select all</button>
 
           <button
@@ -188,15 +186,17 @@
               isItemsToRemoveEmpty ? 'opacity-50' : 'opacity-100'
             ]"
             :disabled="isItemsToRemoveEmpty"
-            @click="deleleSelectedItems"
+            @click="deleteSelectedItems"
           >Delete selected</button>
         </div>
       </div>
 
       <!-- Cart item list -->
       <CartItemList
-        :isRemovingItems="isRemovingItems"
         :isSelectedAllItems="isSelectedAllItems"
+        :isRemovingItems="isRemovingItems"
+        :isRemovingAllItems="isAllItemsSelectedToRemove"
+        :itemsAfterRemoval="itemsAfterRemoval"
         @items-loaded="updateItemInfo"
         @selectedItem-changed="updateChangedItemInfo"
         @selectedItemList-changed="handleSelectedItemsToRemoveState"
