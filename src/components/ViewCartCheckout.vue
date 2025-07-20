@@ -2,6 +2,7 @@
   import VoucherIcon from '@/assets/icons/VoucherIcon.vue';
 
   import { defineProps, ref, defineEmits } from 'vue';
+  import { useRouter } from 'vue-router'; const router = useRouter()
   import { useToast } from 'vue-toastification'; const toast = useToast()
 
   const props = defineProps({
@@ -45,8 +46,8 @@
     const totalPrice = props.totalPrice
     const subTotalPrice = props.subTotalPrice
 
-    if (totalItems > 0) {
-      window.location.href = `/order?totalItems=${totalItems}&totalPrice=${totalPrice}&subTotalPrice=${subTotalPrice}`
+    if (totalItems > 0 && totalPrice > 0 && subTotalPrice > 0) {
+      router.push(`/order`)
     } else {
       toast.warning("Please select an item to checkout")
     }
@@ -121,12 +122,12 @@
           </svg>
         </div>
       </div>
-      <RouterLink
+      <button
         class="bg-[#06deaa] hover:bg-green-500 transition-colors text-white px-4 py-2 rounded-lg text-sm font-semibold font-poppins"
-        to="/order"
+        @click="checkout"
       >
         Checkout ({{ props.totalItemsSelected }})
-      </RouterLink>
+    </button>
     </div>
   </div>
 </template>
