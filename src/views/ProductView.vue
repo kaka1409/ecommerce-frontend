@@ -4,6 +4,7 @@ import NavigationBar from '@/components/NavigationBar.vue';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/css/index.css';
 
+import hostURL from '@/configs/env';
 import axios from 'axios'
 import { useToast } from 'vue-toastification';
 import { onMounted, reactive } from 'vue';
@@ -24,7 +25,7 @@ const fetchProduct = async (productId) => {
     state.isLoading = true;
 
     const accessToken = localStorage.getItem('accessToken');
-    const endpoint = `http://26.16.186.88/api/v1/products/${productId}`;
+    const endpoint = `${hostURL}/api/v1/products/${productId}`;
 
     console.log('Fetching product with ID:', productId);
     console.log('Endpoint:', endpoint);
@@ -116,7 +117,7 @@ const addToCart = async () => {
       console.log('Adding to cart:', { productId, quantity });
 
       const response = await axios.post(
-        "http://26.16.186.88/api/v1/cart/items",
+        `${hostURL}/api/v1/cart/items`,
         {
           productId: productId,
           quantity: quantity,

@@ -2,6 +2,7 @@
   import productPlaceholderImg from '@/assets/images/productPlaceholderThumbnail.png'
 
   //packages
+  import hostURL from '@/configs/env';
   import { useToast } from 'vue-toastification'; const toast = useToast()
   import { defineProps, ref, watch } from 'vue';
   import axios from 'axios';
@@ -142,16 +143,12 @@
     }
   }
 
-  // const addItemtoRemoveList = () => {
-  //   itemsToRemove.value.push(props.product.id)
-  // }
-
   const changeProductQuantity = async (quantity) => {
     try {
       const accessToken = localStorage.getItem('accessToken')
 
       if (accessToken) {
-        const response = await axios.put('http://26.16.186.88/api/v1/cart/items',
+        const response = await axios.put(`${hostURL}/api/v1/cart/items`,
           {
             "cartItemId": props.product.id,
             "quantity": quantity
@@ -188,7 +185,7 @@
       const accessToken = localStorage.getItem('accessToken')
 
       if (accessToken) {
-        const response = await axios.delete(`http://26.16.186.88/api/v1/cart/items/${props.product.id}`,
+        const response = await axios.delete(`${hostURL}/api/v1/cart/items/${props.product.id}`,
           { // HEADERS
             headers: {
               'Accept': '*/*',
@@ -201,7 +198,12 @@
 
         if (axiosResponse.status === 200) {
           toast.success(`${props.product.name} removed from cart`)
-          emit('remove', axiosResponse.data.cartItems)
+          emit('remove',
+            {
+              data: axiosResponse.data.cartItems,
+              removedID: props.product.id
+            }
+          )
           console.log("Your cart items now", axiosResponse.data.cartItems)
         } else {
           toast.error(axiosResponse.message)

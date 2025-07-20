@@ -1,12 +1,12 @@
 <script setup>
   import CartItem from './CartItem.vue';
 
-
-  import { useCartItemList } from '@/stores/cartItemList'; const cartItemListState = useCartItemList()
-  import { reactive, onMounted, defineEmits, defineProps, watch } from 'vue';
+  import hostURL from '@/configs/env';
   import axios from 'axios';
   import Loading from 'vue-loading-overlay';
   import 'vue-loading-overlay/dist/css/index.css';
+  import { reactive, onMounted, defineEmits, defineProps, watch } from 'vue';
+  import { useCartItemList } from '@/stores/cartItemList'; const cartItemListState = useCartItemList()
   import { useToast } from 'vue-toastification'; const toast = useToast()
 
   const props = defineProps({
@@ -66,8 +66,11 @@
   }
 
   const itemRemoved = (items) => {
-    state.cartItems = items
-    state.selectedItems = state.cartItems
+    state.cartItems = items.data
+    state.selectedItems = state.selectedItems.filter((item) => {
+      return item.id !== items.removedID
+    })
+
     emits("selectedItem-changed", state.selectedItems)
   }
 
@@ -125,7 +128,7 @@
   const getCartItems = async () => {
     try {
       const token = localStorage.getItem('accessToken')
-      const res = await axios.get('http://26.16.186.88/api/v1/cart', {
+      const res = await axios.get(`${hostURL}/api/v1/cart`, {
         headers: {
           'Accept': '*/*',
           'Authorization': `Bearer ${token}`,

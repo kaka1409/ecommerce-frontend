@@ -1,6 +1,7 @@
 <script setup>
   import productPlaceholderImg from '@/assets/images/productPlaceholderThumbnail.png'
 
+  import hostURL from '@/configs/env';
   import axios from 'axios'
   import { useToast } from 'vue-toastification'; const toast = useToast()
   import { defineProps } from 'vue';
@@ -27,7 +28,7 @@
         const productId = props.productObject.id;
         const quantity = 1;
         const response = axios.post(
-          "http://26.16.186.88/api/v1/cart/items",
+          `${hostURL}/api/v1/cart/items`,
           {
             productId: productId,
             quantity: quantity,

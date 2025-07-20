@@ -3,6 +3,7 @@
   import ViewCartHeader from "@/components/ViewCartHeader.vue";
   import ViewCartCheckout from "@/components/ViewCartCheckout.vue";
 
+  import hostURL from '@/configs/env';
   import { useToast } from 'vue-toastification'; const toast = useToast()
   import { ref } from 'vue';
   import axios from 'axios';
@@ -78,27 +79,27 @@
   const deleteSelectedItems = async () => {
     const itemsToRemoveLength = itemsToRemove.value.length
 
-    let endpoint = 'http://26.16.186.88/api/v1/cart'
+    let endpoint = `${hostURL}/api/v1/cart`
     let body = {}
 
     if (itemsToRemoveLength === 1) {
       // Clear one specific item
       const itemId = itemsToRemove.value[0]
 
-      endpoint = `http://26.16.186.88/api/v1/cart/items/${itemId}`
+      endpoint = `${hostURL}/api/v1/cart/items/${itemId}`
       body = {}
 
     } else if (itemsToRemoveLength < totalItems.value){
       // Clear some items
 
-      endpoint = `http://26.16.186.88/api/v1/cart/items`
+      endpoint = `${hostURL}/api/v1/cart/items`
       body = {
         "cartItemIds": [...itemsToRemove.value]
       }
 
     } else {
       // clear all
-      endpoint = `http://26.16.186.88/api/v1/cart`
+      endpoint = `${hostURL}/api/v1/cart`
       body = {}
     }
 

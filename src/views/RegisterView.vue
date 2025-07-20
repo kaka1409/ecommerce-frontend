@@ -4,6 +4,7 @@
   import { EyeIcon, EyeSlashIcon } from '@heroicons/vue/24/solid'
 
   // packages
+  import hostURL from '@/configs/env';
   import axios from 'axios';
   import { useToast } from 'vue-toastification';
   import { reactive } from 'vue';
@@ -85,10 +86,7 @@
 
   const register = async () => {
     try {
-      // Radmin  http://26.16.186.88/api/v1/users/register
-      // Tailscale    http://100.81.52.73/api/v1/users/register
-
-      const response = axios.post('http://26.16.186.88/api/v1/users/register',
+      const response = axios.post(`${hostURL}/api/v1/users/register`,
         { // BODY
           "username": formData.username,
           "email": formData.email,

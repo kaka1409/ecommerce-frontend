@@ -1,4 +1,5 @@
 <script setup>
+  import hostURL from '@/configs/env';
   import StarIcon from '@/assets/icons/StarIcon.vue';
   import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
   import ProductItem from '@/components/ProductItem.vue';
@@ -23,14 +24,11 @@
 
   const listProducts = async (pageNo) => {
       try {
-        // Radmin  http://26.16.186.88/api/v1/products
-        // Tailscale    http://100.81.52.73/api/v1/products
-
         // show loading
         state.isLoading = true
 
         const accessToken = localStorage.getItem('accessToken')
-        const baseURL = 'http://26.16.186.88/api/v1/products'
+        const baseURL = `${hostURL}/api/v1/products`
         const params = new URLSearchParams({
           pageNo: pageNo,
           pageSize: props.pageSize

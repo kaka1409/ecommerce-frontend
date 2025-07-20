@@ -6,9 +6,10 @@
   import Loading from 'vue-loading-overlay';
   import 'vue-loading-overlay/dist/css/index.css';
 
+  import hostURL from '@/configs/env';
   import axios from 'axios'
-  import { useToast } from 'vue-toastification'; const toast = useToast()
   import { onMounted, reactive, defineProps } from 'vue';
+  import { useToast } from 'vue-toastification'; const toast = useToast()
 
   const props = defineProps({
     query: String,
@@ -31,7 +32,7 @@
         const accessToken = localStorage.getItem('accessToken')
 
         if (accessToken) {
-          const response = await axios.get(`http://26.16.186.88/api/v1/products?pageNo=${pageNo}&pageSize=${state.pageSize}&keyword=${state.searchQuery}`, {
+          const response = await axios.get(`${hostURL}/api/v1/products?pageNo=${pageNo}&pageSize=${state.pageSize}&keyword=${state.searchQuery}`, {
             headers: {
               'Accept': '*/*',
               'Authorization': `Bearer ${accessToken}`

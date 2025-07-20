@@ -2,6 +2,7 @@
   // icons
   import LogoutIcon from '@/assets/icons/LogoutIcon.vue';
 
+  import hostURL from '@/configs/env';
   import axios from 'axios';
   import { useToast } from 'vue-toastification';
   const toast = useToast()
@@ -11,7 +12,7 @@
 
       const accessToken = localStorage.getItem('accessToken')
 
-      const response = await axios.post('http://26.16.186.88/api/v1/users/logout', {}, {
+      const response = await axios.post(`${hostURL}/api/v1/users/logout`, {}, {
         headers: {
           'Accept': '*/*',
           'Content-Type': 'application/json',
