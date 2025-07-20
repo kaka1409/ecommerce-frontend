@@ -1,7 +1,6 @@
 <script setup>
   import productPlaceholderImg from '@/assets/images/productPlaceholderThumbnail.png'
 
-
   import axios from 'axios'
   import { useToast } from 'vue-toastification'; const toast = useToast()
   import { defineProps } from 'vue';

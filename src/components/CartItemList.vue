@@ -1,6 +1,8 @@
 <script setup>
   import CartItem from './CartItem.vue';
 
+
+  import { useCartItemList } from '@/stores/cartItemList'; const cartItemListState = useCartItemList()
   import { reactive, onMounted, defineEmits, defineProps, watch } from 'vue';
   import axios from 'axios';
   import Loading from 'vue-loading-overlay';
@@ -8,25 +10,117 @@
   import { useToast } from 'vue-toastification'; const toast = useToast()
 
   const props = defineProps({
+    isSelectedAllItems: {
+      type: Boolean,
+      default: false
+    },
+
     isRemovingItems: {
       type: Boolean,
       default: false
+    },
+
+    isRemovingAllItems: {
+      type: Boolean,
+      default: false
+    },
+
+    itemsAfterRemoval: {
+      type: Array,
+      default: () => []
     }
+
   })
 
   const state = reactive({
     cartItems: [],
     selectedItems: [],
+    isSelectedAllItems: props.isSelectedAllItems,
     isRemovingItems: props.isRemovingItems,
+    isRemovingAllItems: props.isRemovingAllItems,
     itemsToRemove: [],
     isLoading: true
   })
+
 
   const emits = defineEmits([
     'items-loaded',
     'selectedItem-changed',
     'selectedItemList-changed'
   ])
+
+  const updateQuantity = (items) => {
+    state.cartItems = items
+
+    // update quantity in selected items
+    state.selectedItems.forEach(selectedItem => {
+      state.cartItems.forEach(cartItem => {
+        if (cartItem.id === selectedItem.id) {
+          selectedItem.quantity = cartItem.quantity
+          selectedItem.subTotalPrice = cartItem.subTotalPrice
+        }
+      })
+    })
+
+    emits('selectedItem-changed', state.selectedItems)
+  }
+
+  const itemRemoved = (items) => {
+    state.cartItems = items
+    state.selectedItems = state.cartItems
+    emits("selectedItem-changed", state.selectedItems)
+  }
+
+  const seletedItemChanged = (item) => {
+
+    if (!item.selected) {
+      // Remove the selected item
+      state.selectedItems = state.selectedItems.filter(productItem => {
+        return productItem.id !== item.productId
+      })
+
+      cartItemListState.setSelectedItem(state.selectedItems)
+    } else {
+      // Add the selected item
+      const seletedItem = state.cartItems.find(productItem => {
+        return productItem.id === item.productId
+      })
+
+      state.selectedItems.push(seletedItem)
+
+      cartItemListState.setSelectedItem(state.selectedItems)
+    }
+
+    console.log(cartItemListState.selectedItems)
+    emits('selectedItem-changed', state.selectedItems)
+  }
+
+  const selectAllItems = () => {
+    if (state.isSelectedAllItems) {
+      state.selectedItems = state.cartItems
+    } else {
+      state.selectedItems = []
+    }
+    emits('selectedItem-changed', state.selectedItems)
+  }
+
+  const selectItemsToRemove = (item) => {
+
+    let itemsToRemove = state.itemsToRemove
+
+    if (item.isSelected) {
+      // Add product to remove list
+      if (!itemsToRemove.includes(item.productId)) {
+        itemsToRemove.push(item.productId)
+      }
+    } else {
+      // Remove product from remove list
+      const indexToRemove = itemsToRemove.indexOf(item.productId)
+      itemsToRemove.splice(indexToRemove, 1)
+    }
+
+    emits('selectedItemList-changed', itemsToRemove)
+  }
 
   const getCartItems = async () => {
     try {
@@ -59,34 +153,10 @@
     }
   }
 
-  const itemRemoved = (items) => {
-    state.cartItems = items
-    state.selectedItems = state.cartItems
-  }
-
-  onMounted (() => {
-    getCartItems()
-    emits('items-loaded', state.selectedItems)
-  })
-
-  const seletedItemChanged = (item) => {
-
-    if (!item.selected) {
-      // Remove the selected item
-      state.selectedItems = state.selectedItems.filter(productItem => {
-        return productItem.id !== item.productId
-      })
-    } else {
-      // Add the selected item
-      const seletedItem = state.cartItems.find(productItem => {
-        return productItem.id === item.productId
-      })
-
-      state.selectedItems.push(seletedItem)
-    }
-
-    emits('selectedItem-changed', state.selectedItems)
-  }
+  watch(() => props.isSelectedAllItems, (newVal, oldVal) => {
+    state.isSelectedAllItems = newVal
+    selectAllItems()
+  });
 
   // watch change for isRemovingItems
   watch(() => props.isRemovingItems, (newVal, oldVal) => {
@@ -94,20 +164,23 @@
     state.itemsToRemove = [];
   });
 
-  const selectItemsToRemove = (item) => {
-    let itemsToRemove = state.itemsToRemove
+  // watch change for removing all items
+  watch(() => props.isRemovingAllItems, (newVal, oldVal) => {
+    state.isRemovingAllItems = newVal
+  });
 
-    if (item.isSelected) {
-      // Add product to remove list
-      itemsToRemove.push(item.productId)
-    } else {
-      // Remove product from remove list
-      const indexToRemove = itemsToRemove.indexOf(item.productId)
-      itemsToRemove.splice(indexToRemove, 1)
+  watch(() => props.itemsAfterRemoval, (newVal) => {
+    if (newVal && Array.isArray(newVal)) {
+      state.cartItems = newVal
     }
+  })
 
-    emits('selectedItemList-changed', itemsToRemove)
-  }
+  onMounted (() => {
+    getCartItems()
+    emits('items-loaded', state.selectedItems)
+  })
+
+
 
 </script>
 
@@ -138,9 +211,12 @@
       :key="cartItem.id"
       :product="cartItem"
       :initialQuantity="cartItem.quantity"
-      :initialSelected="false"
+      :inStockQuantity="cartItem.inStockQuantity"
+      :isSelected="state.isSelectedAllItems"
       :isRemovingItems="state.isRemovingItems"
-      :is-selected-to-remove="false"
+      :isSelectedToRemove="false"
+      :isInRemoveAll="state.isRemovingAllItems"
+      @quantity-changed="updateQuantity"
       @selection-changed="seletedItemChanged"
       @remove="itemRemoved"
       @selected-to-remove="selectItemsToRemove"

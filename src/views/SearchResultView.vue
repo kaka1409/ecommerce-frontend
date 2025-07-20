@@ -2,12 +2,20 @@
   // Icons and components
   import SearchIcon from '@/assets/icons/SearchIcon.vue';
   import NavigationBar from '@/components/NavigationBar.vue';
-  import ProductList from '@/components/ProductList.vue';
+  import SearchResultList from '@/components/SearchResultList.vue';
 
   import { reactive } from 'vue';
 
+  const searchParams = new URLSearchParams(window.location.search)
+
+  // console.log(searchParams.get('keyword'))
+
   const state = reactive({
-    searchQuery: '',
+    searchQuery: searchParams.get('keyword'),
+    searchResults: [],
+    totalPages: 0,
+    pageNo: parseInt(searchParams.get('pageNo')),
+    pageSize: parseInt(searchParams.get('pageSize'))
   })
 
   const search =  () => {
@@ -48,8 +56,11 @@
       </div>
     </div>
 
-    <ProductList
-      :pageSize="10"
+    <SearchResultList
+      :query="state.searchQuery"
+      :pageNo="state.pageNo"
+      :pageSize="state.pageSize"
+      :totalPages="state.totalPages"
     />
 
     <NavigationBar />
