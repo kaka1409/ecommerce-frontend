@@ -121,12 +121,12 @@
           </svg>
         </div>
       </div>
-      <button
+      <RouterLink
         class="bg-[#06deaa] hover:bg-green-500 transition-colors text-white px-4 py-2 rounded-lg text-sm font-semibold font-poppins"
-        @click="checkout"
+        to="/order"
       >
         Checkout ({{ props.totalItemsSelected }})
-      </button>
+      </RouterLink>
     </div>
   </div>
 </template>

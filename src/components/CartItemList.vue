@@ -1,6 +1,8 @@
 <script setup>
   import CartItem from './CartItem.vue';
 
+
+  import { useCartItemList } from '@/stores/cartItemList'; const cartItemListState = useCartItemList()
   import { reactive, onMounted, defineEmits, defineProps, watch } from 'vue';
   import axios from 'axios';
   import Loading from 'vue-loading-overlay';
@@ -40,6 +42,7 @@
     isLoading: true
   })
 
+
   const emits = defineEmits([
     'items-loaded',
     'selectedItem-changed',
@@ -75,6 +78,8 @@
       state.selectedItems = state.selectedItems.filter(productItem => {
         return productItem.id !== item.productId
       })
+
+      cartItemListState.setSelectedItem(state.selectedItems)
     } else {
       // Add the selected item
       const seletedItem = state.cartItems.find(productItem => {
@@ -82,8 +87,11 @@
       })
 
       state.selectedItems.push(seletedItem)
+
+      cartItemListState.setSelectedItem(state.selectedItems)
     }
 
+    console.log(cartItemListState.selectedItems)
     emits('selectedItem-changed', state.selectedItems)
   }
 
@@ -171,6 +179,8 @@
     getCartItems()
     emits('items-loaded', state.selectedItems)
   })
+
+
 
 </script>
 

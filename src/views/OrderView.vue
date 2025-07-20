@@ -1,5 +1,13 @@
+<script setup>
+  import { useCartItemList } from '@/stores/cartItemList'; const cartItemListState = useCartItemList()
+
+
+  console.log(cartItemListState.selectedItems)
+
+</script>
+
 <template>
   <div>
-    Order
+    {{ cartItemListState.selectedItems }}
   </div>
 </template>
