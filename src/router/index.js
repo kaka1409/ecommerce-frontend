@@ -11,6 +11,7 @@ import Order from "@/views/OrderView.vue"
 import Wallet from "@/views/WalletView.vue"
 import User from "@/views/UserView.vue"
 import Setting from "@/views/SettingView.vue"
+import PaymentView from "@/views/PaymentView.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -69,6 +70,11 @@ const router = createRouter({
       path: '/setting',
       name: 'setting',
       component: Setting
+    },
+    {
+      path: '/payment',
+      name: 'payment',
+      component: PaymentView
     },
     {
       path: '/:catchAll(.*)',

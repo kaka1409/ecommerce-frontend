@@ -1,6 +1,7 @@
 <script setup>
   import BackArrowIcon from "@/assets/icons/BackArrowIcon.vue";
   import { defineProps } from "vue";
+  import { useRouter } from 'vue-router';
 
   const props = defineProps({
     totalItems: {
@@ -8,7 +9,11 @@
       default: 0
     }
   })
+  const router = useRouter();
 
+  const goBack = () => {
+    router.back();
+  };
 </script>
 
 <template>
@@ -16,11 +21,11 @@
     class="bg-white shadow-md w-full h-15 flex items-center justify-betweens px-[19px]"
   >
 
-    <RouterLink to="/home">
+    <button @click="goBack">
       <BackArrowIcon />
-    </RouterLink>
+    </button>
     <div class="flex-1 flex items-center justify-center gap-2">
-      <h1 class="text-[24px] ">Cart</h1>
+      <h1 class="text-[24px]">Final Order</h1>
       <span class="text-[14px] mt-[2px]">( {{ props.totalItems >= 2 ? props.totalItems + " items" : props.totalItems + " item" }} )</span>
     </div>
   </header>

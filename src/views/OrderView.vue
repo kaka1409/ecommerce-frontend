@@ -1,12 +1,12 @@
 <script setup>
-  import BackArrowIcon from '@/assets/icons/BackArrowIcon.vue';
   import LocationIcon from '@/assets/icons/LocationIcon.vue';
   import PlaceholderImage from '@/assets/images/productPlaceholderThumbnail.png';
+  import ViewOrderHeader from '@/components/ViewOrderHeader.vue';
 
   import axios from 'axios';
   import hostURL from '@/configs/env';
   import { onMounted } from 'vue';
-  import { RouterLink, useRouter } from 'vue-router'; const router = useRouter()
+  import { useRouter } from 'vue-router'; const router = useRouter()
   import { useToast } from 'vue-toastification'; const toast = useToast()
   import { useCartItemList } from '@/stores/cartItemList'; const cartItemListState = useCartItemList()
   import { useOrder } from '@/stores/order'; const orderState = useOrder()
@@ -98,9 +98,10 @@
 </script>
 
 <template>
-  <div class="max-w-sm mx-auto bg-white h-full overflow-y-scroll">
+  <div class="max-w-sm mx-auto bg-white h-full overflow-y-scroll font-poppins">
     <!-- Header -->
-    <div class="flex items-center justify-between p-4 border-b border-gray-200">
+    <ViewOrderHeader :totalItems="orderState.orderitems.length" />
+    <!-- <div class="flex items-center justify-between p-4 border-b border-gray-200">
       <RouterLink class="p-1" to="/cart">
         <BackArrowIcon />
       </RouterLink>
@@ -110,7 +111,7 @@
         <div class="w-4 h-2 bg-white rounded-sm"></div>
         <div class="w-4 h-2 bg-white rounded-sm"></div>
       </div>
-    </div>
+    </div> -->
 
     <!-- Delivery Address -->
     <div class="p-4 border-b border-gray-200">
@@ -170,7 +171,7 @@
           </svg>
           <span class="font-medium text-gray-900">CheapDeal Voucher</span>
         </div>
-        <div class="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center">
+        <div class="w-5 h-5 bg-[#07f7b6] rounded-full flex items-center justify-center">
           <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
           </svg>
@@ -238,7 +239,7 @@
           <div class="text-sm text-gray-500">(${{ orderState.itemsTotal }}) {{orderState.discountPercent}}% discount</div>
         </div>
         <button
-          class="bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-8 rounded-lg"
+          class="bg-[#07f7b6] text-white font-semibold py-3 px-8 rounded-lg"
           @click="placeOrder"
         >
           Place order

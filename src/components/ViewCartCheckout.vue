@@ -123,7 +123,7 @@
         </div>
       </div>
       <button
-        class="bg-[#06deaa] hover:bg-green-500 transition-colors text-white px-4 py-2 rounded-lg text-sm font-semibold font-poppins"
+        class="bg-[#07f7b6] transition-colors mr-4 text-white px-8 py-3 rounded-lg font-semibold font-poppins"
         @click="checkout"
       >
         Checkout ({{ props.totalItemsSelected }})
