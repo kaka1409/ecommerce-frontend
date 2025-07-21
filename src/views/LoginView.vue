@@ -6,11 +6,11 @@
 
   // packages
   import hostURL from '@/configs/env';
-  import { useToast } from 'vue-toastification'; const toast = useToast();
   import axios from 'axios';
   import { reactive, ref } from 'vue';
-  import { Form, Field, ErrorMessage, useForm } from 'vee-validate';
   import * as yup from 'yup';
+  import { Form, Field, ErrorMessage, useForm } from 'vee-validate';
+  import { useToast } from 'vue-toastification'; const toast = useToast();
 
   // Form rules
   const schema = yup.object({
@@ -77,7 +77,7 @@
       if (error.response) {
         toast.error(error.response.data.message)
       } else {
-        toast.error("Connection timed out")
+        toast.error("Connection timed out or blocked my CORS policy")
       }
       throw new Error("Error logging in ", error);
     }

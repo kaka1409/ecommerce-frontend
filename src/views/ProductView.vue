@@ -194,10 +194,12 @@ onMounted(() => {
 <template>
   <div class="bg-white text-gray-800 pb-[100px] relative h-screen overflow-y-auto ml-[5px] font-poppins">
     <!-- Loading overlay -->
-    <Loading v-model:active="state.isLoading"
-             :can-cancel="false"
-             :on-cancel="() => {}"
-             :is-full-page="false" />
+    <Loading
+      v-model:active="state.isLoading"
+      :can-cancel="false"
+      :on-cancel="() => {}"
+      :is-full-page="false"
+    />
 
     <!-- Product content - show only when not loading and product exists -->
     <div v-if="!state.isLoading && state.product">

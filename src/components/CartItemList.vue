@@ -82,7 +82,7 @@
         return productItem.id !== item.productId
       })
 
-      cartItemListState.setSelectedItem(state.selectedItems)
+      cartItemListState.selectedItems = state.selectedItems
     } else {
       // Add the selected item
       const seletedItem = state.cartItems.find(productItem => {
@@ -91,7 +91,7 @@
 
       state.selectedItems.push(seletedItem)
 
-      cartItemListState.setSelectedItem(state.selectedItems)
+      cartItemListState.selectedItems = state.selectedItems
     }
 
     console.log(cartItemListState.selectedItems)

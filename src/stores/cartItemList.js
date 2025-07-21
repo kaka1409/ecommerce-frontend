@@ -6,16 +6,17 @@ export const useCartItemList = defineStore("cartItemList", {
       cartItems: [],
       selectedItems: [],
       itemsToRemove: [],
+      subTotalPrice: 0,
+      totalPrice: 0,
       isLoading: true
     }
   },
 
   getters: {
+
   },
 
   actions: {
-    setSelectedItem(selectedItems) {
-      this.selectedItems = selectedItems
-    }
+
   }
 })
