@@ -3,6 +3,7 @@ import { defineStore } from "pinia";
 export const useOrder = defineStore("order", {
   state: () => {
     return {
+      id:'',
       fullname: '',
       phone: '',
       address: [],
@@ -14,7 +15,8 @@ export const useOrder = defineStore("order", {
       },
       defaultAddressID: 0,
       orderitems:[],
-      discount: 0.15
+      discount: 0.15,
+      totalPrice: 0
     }
   },
 
@@ -22,7 +24,7 @@ export const useOrder = defineStore("order", {
     discountPercent: (state) => state.discount * 100,
     itemsTotal: (state) => state.orderitems.reduce((total, item) => total + item.subTotalPrice, 0),
     discountPrice: (state) => (state.itemsTotal * state.discount).toFixed(2),
-    totalPrice: (state) => (state.itemsTotal - state.discountPrice).toFixed(2)
+    totalAmount: (state) => (state.itemsTotal - state.discountPrice).toFixed(2)
   },
 
   actions: {

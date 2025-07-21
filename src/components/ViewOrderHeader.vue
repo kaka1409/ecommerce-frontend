@@ -18,7 +18,7 @@
 
 <template>
   <header
-    class="bg-white shadow-md w-full h-15 flex items-center justify-betweens px-[19px]"
+    class="bg-white shadow-md w-full h-15 flex items-center justify-betweens px-[19px] font-semibold"
   >
 
     <button @click="goBack">

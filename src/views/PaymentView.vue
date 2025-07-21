@@ -3,19 +3,66 @@
   import { useOrder } from '@/stores/order'
   import { useUserInfo } from '@/stores/userInfo'
   import ViewPaymentHeader from '@/components/ViewPaymentHeader.vue'
+  import  axios  from 'axios'
+  import hostURL from '@/configs/env'
+  import { useToast } from 'vue-toastification'
+  import { useRouter } from 'vue-router'
+  import { usePayment } from '@/stores/payment'
 
+  const router = useRouter()
   const orderState = useOrder()
   const userInfoState = useUserInfo()
-
-  const shippingFee = 2
+  const toast = useToast()
+  const paymentState = usePayment()
 
   // Calculate final total including shipping
   const finalTotal = computed(() => {
-    return (parseFloat(orderState.totalPrice) + shippingFee).toFixed(2)
+    return (parseFloat(orderState.totalPrice)).toFixed(2)
   })
+  console.log(finalTotal.value)
+  const accessToken = localStorage.getItem('accessToken')
+  const makePayment = async () => {
+    try {
+      const orderId = orderState.id
+      if (accessToken) {
+        const response = await axios.post(`${hostURL}/api/v1/payments`,
+          {
+            "orderId": orderId,
+            "totalAmount": finalTotal.value
+          },
+          {
+            headers: {
+              "Accept": "*/*",
+              "Authorization": `Bearer ${accessToken}`,
+            },
+          }
+        )
 
-  const processPayment = () => {
-    // Handle payment processing logic here
+        const responseBody = response.data
+
+
+        if (responseBody.status === 201) {
+          toast.success(responseBody.message)
+          paymentState.visaCheckRef = responseBody.data.visaCheckRef
+          console.log(responseBody.data)
+          // router.push(`/paymentSuccess`)
+        } else {
+          toast.error(responseBody.message)
+          console.error(responseBody.message)
+          // router.push(`/paymentError`)
+
+        }
+      } else {
+        toast.error("You are not logged in")
+        console.error("You are not logged in")
+        // router.push(`/paymentError`)
+
+      }
+    } catch (error) {
+      // toast.error(error.response.data.message)
+      console.log(error)
+      // router.push(`/paymentError`)
+    }
     console.log('Processing payment for total:', finalTotal.value)
     // You can add API call here to process the payment
   }
@@ -69,10 +116,6 @@
             <span>${{ orderState.itemsTotal }}</span>
           </div>
           <div class="flex justify-between">
-            <span>Shipping Fee</span>
-            <span>${{ shippingFee }}</span>
-          </div>
-          <div class="flex justify-between">
             <span>Discount</span>
             <span>-${{ orderState.discountPrice }}</span>
           </div>
@@ -86,7 +129,7 @@
 
     <!-- Confirm Payment Button -->
     <div class="mt-9">
-      <button @click="processPayment" class="w-full bg-[#07f7b6] text-white font-semibold py-3 rounded-full text-center shadow-md">
+      <button @click="makePayment" class="w-full bg-[#07f7b6] text-white font-semibold py-3 rounded-full text-center shadow-md">
         PAY NOW
       </button>
     </div>

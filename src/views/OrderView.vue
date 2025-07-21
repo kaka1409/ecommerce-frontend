@@ -73,9 +73,11 @@
         const responseBody = response.data
 
 
-        if (responseBody.status === 200) {
+        if (responseBody.status === 201) {
           toast.success(responseBody.message)
           console.log(responseBody.data)
+          orderState.id = responseBody.data.orderId
+          orderState.totalPrice = responseBody.data.totalAmount
           router.push(`/payment`)
         } else {
           toast.error(responseBody.message)
@@ -86,7 +88,7 @@
         console.error("You are not logged in")
       }
     } catch (error) {
-      toast.error(error.response.data.message)
+      // toast.error(error.response.data.message)
       console.error(error)
     }
   }
@@ -225,7 +227,7 @@
         <div class="border-t pt-2 mt-2">
           <div class="flex justify-between">
             <span class="text-gray-600">Total Payable:</span>
-            <span class="text-gray-900">${{ orderState.totalPrice }}</span>
+            <span class="text-gray-900">${{ orderState.totalAmount }}</span>
           </div>
         </div>
       </div>
@@ -235,7 +237,7 @@
     <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
       <div class="max-w-sm mx-auto flex items-center justify-between">
         <div class="text-center">
-          <div class="text-xl font-bold text-gray-900">Total: ${{ orderState.totalPrice }}</div>
+          <div class="text-xl font-bold text-gray-900">Total: ${{ orderState.totalAmount }}</div>
           <div class="text-sm text-gray-500">(${{ orderState.itemsTotal }}) {{orderState.discountPercent}}% discount</div>
         </div>
         <button
