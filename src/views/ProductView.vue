@@ -244,7 +244,8 @@ onMounted(() => {
           :src="asset.url"
           :alt="asset.altText || `Thumbnail ${index + 1}`"
           :class="['w-20 h-20 rounded-md object-cover border-2 cursor-pointer transition-all hover:border-[#07f7b6] hover:opacity-80',
-                   index === state.currentImageIndex ? 'border-[#07f7b6] shadow-lg' : 'border-transparent']"
+            index === state.currentImageIndex ? 'border-[#07f7b6] shadow-lg' : 'border-transparent'
+          ]"
         />
       </div>
 

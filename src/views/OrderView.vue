@@ -43,6 +43,8 @@
     } catch (error) {
       toast.error(error.response.data.message)
       console.error(error)
+    } finally {
+      orderState.isPreparing = false
     }
   }
 
@@ -87,9 +89,7 @@
           orderState.totalPrice = responseBody.data.totalAmount
 
           // Redirect to payment page
-          setTimeout(() => {
-            router.push(`/payment`)
-          }, 2000);
+          router.push(`/payment`)
 
         } else {
           toast.error(responseBody.message)
@@ -115,8 +115,25 @@
 
 <template>
   <div
+    v-if="orderState.isPreparing"
+    class="fixed top-0 left-0 right-0 bottom-0 z-50 flex items-center flex-col justify-center bg-white"
+  >
+    <span
+      class="text-[#07f7b6] font-bold text-xl text-center"
+    >
+      Preparing order, please wait...
+    </span>
+    <div class="h-25 opacity-0">_</div>
+    <Loading
+      :active="orderState.isPreparing"
+      loader="bars"
+      color="#07f7b6"
+    />
+  </div>
+
+  <div
     v-if="orderState.isOrderProcessing"
-    class="fixed top-0 left-0 right-0 bottom-0 z-50 flex items-center flex-col justify-center bg-gray-200 bg-opacity-50"
+    class="fixed top-0 left-0 right-0 bottom-0 z-50 flex items-center flex-col justify-center bg-white"
   >
     <span
       class="text-[#07f7b6] font-bold text-xl text-center"
@@ -134,17 +151,6 @@
   <div class="max-w-sm mx-auto bg-white h-full overflow-y-scroll font-poppins">
     <!-- Header -->
     <ViewOrderHeader :totalItems="orderState.orderitems.length" />
-    <!-- <div class="flex items-center justify-between p-4 border-b border-gray-200">
-      <RouterLink class="p-1" to="/cart">
-        <BackArrowIcon />
-      </RouterLink>
-      <h1 class="text-lg font-semibold text-gray-900">Final Order</h1>
-      <div class="flex space-x-1">
-        <div class="w-4 h-2 bg-white rounded-sm"></div>
-        <div class="w-4 h-2 bg-white rounded-sm"></div>
-        <div class="w-4 h-2 bg-white rounded-sm"></div>
-      </div>
-    </div> -->
 
     <!-- Delivery Address -->
     <div class="p-4 border-b border-gray-200">

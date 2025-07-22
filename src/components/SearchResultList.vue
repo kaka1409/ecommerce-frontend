@@ -99,7 +99,7 @@
 
     <Loading
       :active="state.isLoading"
-      loader="dots"
+      loader="bars"
       color="#07f7b6"
     />
 

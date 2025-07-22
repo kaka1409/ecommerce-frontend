@@ -183,15 +183,13 @@
     emits('items-loaded', state.selectedItems)
   })
 
-
-
 </script>
 
 <template>
   <section class="overflow-y-auto flex-1">
     <Loading
       :active="state.isLoading"
-      loader="dots"
+      loader="bars"
       color="#07f7b6"
     />
 

@@ -29,8 +29,6 @@
   const accessToken = localStorage.getItem('accessToken')
 
   const processPayment = async () => {
-    paymentState.isProcessing = true
-
     try {
       const visaCheckRef = paymentState.visaCheckRef
 
@@ -54,26 +52,40 @@
           // Success
           toast.success(responseBody.message)
           console.log(responseBody.data)
+          router.push(`/payment/success`)
+
         } else {
+          // Error
           toast.error(responseBody.message)
           console.error(responseBody.message)
+          paymentState.validateMessage = responseBody.message
+          router.push(`/payment/failed`)
         }
       } else {
         toast.error("You are not logged in")
         console.error("You are not logged in")
       }
+
     } catch (error) {
+      // Error
+
       if (error.response) {
         toast.error(error.response.data.message)
+        paymentState.validateMessage = error.response.data.message
       } else {
         toast.error(error.message)
+        paymentState.validateMessage = error.message
       }
+      router.push(`/payment/failed`)
+
     } finally {
       paymentState.isProcessing = false
     }
   }
 
   const makePayment = async () => {
+    paymentState.isProcessing = true
+
     try {
       const orderId = orderState.id
       const totalAmount = finalTotal.value
@@ -126,7 +138,7 @@
 <template>
   <div
     v-if="paymentState.isProcessing"
-    class="fixed top-0 left-0 right-0 bottom-0 z-50 flex items-center flex-col justify-center bg-white bg-opacity-50"
+    class="fixed top-0 left-0 right-0 bottom-0 z-50 flex items-center flex-col justify-center bg-white"
   >
     <span
       class="text-[#07f7b6] font-bold text-xl text-center"
@@ -201,7 +213,11 @@
 
     <!-- Confirm Payment Button -->
     <div class="mt-9">
-      <button @click="makePayment" class="w-full bg-[#07f7b6] text-white font-semibold py-3 rounded-full text-center shadow-md">
+      <button
+        @click="makePayment"
+        class="w-full bg-[#07f7b6] text-white font-semibold py-3 rounded-full text-center shadow-md"
+        :disabled="paymentState.isProcessing"
+      >
         PAY NOW
       </button>
     </div>

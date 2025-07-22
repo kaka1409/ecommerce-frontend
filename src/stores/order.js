@@ -17,6 +17,7 @@ export const useOrder = defineStore("order", {
       orderitems:[],
       discount: 0.15,
       totalPrice: 0,
+      isPreparing: true,
       isOrderProcessing: false
     }
   },

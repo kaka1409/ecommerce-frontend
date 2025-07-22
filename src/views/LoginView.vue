@@ -10,6 +10,7 @@
   import { reactive, ref } from 'vue';
   import * as yup from 'yup';
   import { Form, Field, ErrorMessage, useForm } from 'vee-validate';
+  import { useRouter } from 'vue-router'; const router = useRouter()
   import { useToast } from 'vue-toastification'; const toast = useToast();
 
   // Form rules
@@ -65,7 +66,7 @@
 
         // Redirect to home page
         setTimeout(() => {
-          window.location.href = '/home'
+          router.push('/home')
         }, 1000)
 
       } else {

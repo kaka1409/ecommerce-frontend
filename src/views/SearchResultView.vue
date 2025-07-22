@@ -5,6 +5,7 @@
   import SearchResultList from '@/components/SearchResultList.vue';
 
   import { reactive } from 'vue';
+  import { useRouter } from 'vue-router'; const router = useRouter()
 
   const searchParams = new URLSearchParams(window.location.search)
 
@@ -19,7 +20,7 @@
   })
 
   const search =  () => {
-    window.location.href = `/search?pageNo=1&pageSize=10&keyword=${state.searchQuery}`
+    router.push(`/search?pageNo=1&pageSize=10&keyword=${state.searchQuery}`)
   }
 
 </script>

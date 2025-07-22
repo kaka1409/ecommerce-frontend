@@ -8,10 +8,12 @@ import Search from "@/views/SearchResultView.vue"
 import ProductView from '@/views/ProductView.vue'
 import Cart from "@/views/CartView.vue"
 import Order from "@/views/OrderView.vue"
+import PaymentView from "@/views/PaymentView.vue"
+import PaymentSuccess from '@/views/PaymentSuccess.vue'
+import PaymentFailed from '@/views/PaymentFailed.vue'
 import Wallet from "@/views/WalletView.vue"
 import User from "@/views/UserView.vue"
 import Setting from "@/views/SettingView.vue"
-import PaymentView from "@/views/PaymentView.vue"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -75,6 +77,16 @@ const router = createRouter({
       path: '/payment',
       name: 'payment',
       component: PaymentView
+    },
+    {
+      path: '/payment/success',
+      name: 'paymentSuccess',
+      component: PaymentSuccess
+    },
+    {
+      path: '/payment/failed',
+      name: 'paymentFailed',
+      component: PaymentFailed
     },
     {
       path: '/:catchAll(.*)',

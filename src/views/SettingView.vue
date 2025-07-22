@@ -4,8 +4,8 @@
 
   import hostURL from '@/configs/env';
   import axios from 'axios';
-  import { useToast } from 'vue-toastification';
-  const toast = useToast()
+  import { useRouter } from 'vue-router'; const router = useRouter()
+  import { useToast } from 'vue-toastification'; const toast = useToast()
 
   const logout = async () => {
     try {
@@ -28,7 +28,7 @@
 
         // redirect to home page
         setTimeout(() => {
-          window.location.href = '/login'
+          router.push('/login')
         }, 2000)
 
       } else {
