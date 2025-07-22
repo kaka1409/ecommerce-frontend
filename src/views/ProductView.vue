@@ -1,4 +1,3 @@
-
 <script setup>
 import NavigationBar from '@/components/NavigationBar.vue';
 import Loading from 'vue-loading-overlay';
@@ -17,7 +16,8 @@ const state = reactive({
   isLoading: true,
   product: null,
   quantity: 1,
-  currentImageIndex: 0
+  currentImageIndex: 0,
+  imageTransition: 'slide-right' // Track transition direction
 });
 
 const fetchProduct = async (productId) => {
@@ -78,12 +78,14 @@ const fetchProduct = async (productId) => {
 
 const nextImage = () => {
   if (state.product && state.product.assets && state.product.assets.length > 1) {
+    state.imageTransition = 'slide-left';
     state.currentImageIndex = (state.currentImageIndex + 1) % state.product.assets.length;
   }
 };
 
 const prevImage = () => {
   if (state.product && state.product.assets && state.product.assets.length > 1) {
+    state.imageTransition = 'slide-right';
     state.currentImageIndex = state.currentImageIndex === 0
       ? state.product.assets.length - 1
       : state.currentImageIndex - 1;
@@ -91,6 +93,13 @@ const prevImage = () => {
 };
 
 const selectImage = (index) => {
+  if (index > state.currentImageIndex) {
+    state.imageTransition = 'slide-left';
+  } else if (index < state.currentImageIndex) {
+    state.imageTransition = 'slide-right';
+  } else {
+    state.imageTransition = 'fade';
+  }
   state.currentImageIndex = index;
 };
 
@@ -206,12 +215,19 @@ onMounted(() => {
     <!-- Product content - show only when not loading and product exists -->
     <div v-if="!state.isLoading && state.product">
       <!-- Product Image -->
-      <div class="w-full h-[500px] mb-5 relative">
-        <img
-          :src="state.product.assets && state.product.assets.length > 0 ? state.product.assets[state.currentImageIndex].url : '/src/assets/images/productPlaceholderThumbnail.png'"
-          :alt="state.product.productName"
-          class="w-full h-full object-cover rounded-md"
-        />
+      <div class="w-full h-[500px] mb-5 relative overflow-hidden">
+        <transition
+          :name="state.imageTransition"
+          mode="out-in"
+          :duration="{ enter: 500, leave: 300 }"
+        >
+          <img
+            :key="state.currentImageIndex"
+            :src="state.product.assets && state.product.assets.length > 0 ? state.product.assets[state.currentImageIndex].url : '/src/assets/images/productPlaceholderThumbnail.png'"
+            :alt="state.product.productName"
+            class="w-full h-full object-cover rounded-md"
+          />
+        </transition>
 
         <!-- Left arrow - only show if more than one image -->
         <button
@@ -243,9 +259,10 @@ onMounted(() => {
           @click="selectImage(index)"
           :src="asset.url"
           :alt="asset.altText || `Thumbnail ${index + 1}`"
-          :class="['w-20 h-20 rounded-md object-cover border-2 cursor-pointer transition-all hover:border-[#07f7b6] hover:opacity-80',
-            index === state.currentImageIndex ? 'border-[#07f7b6] shadow-lg' : 'border-transparent'
-          ]"
+          :class="['w-20 h-20 rounded-md object-cover border-2 cursor-pointer transition-all duration-300 hover:border-[#07f7b6] hover:opacity-100 hover:scale-105',
+                   index === state.currentImageIndex
+                     ? 'border-[#07f7b6] shadow-lg opacity-100 scale-105'
+                     : 'border-transparent opacity-60']"
         />
       </div>
 
@@ -337,3 +354,65 @@ onMounted(() => {
   <div class="h-[100px]"></div>
   <NavigationBar />
 </template>
+
+<style scoped>
+/* Slide Left Transition */
+.slide-left-enter-active {
+  transition: all 0.5s ease-out;
+}
+
+.slide-left-leave-active {
+  transition: all 0.3s ease-in;
+}
+
+.slide-left-enter-from {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.slide-left-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+/* Slide Right Transition */
+.slide-right-enter-active {
+  transition: all 0.5s ease-out;
+}
+
+.slide-right-leave-active {
+  transition: all 0.3s ease-in;
+}
+
+.slide-right-enter-from {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.slide-right-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+/* Fade Transition */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* Image container positioning */
+.slide-left-enter-active img,
+.slide-right-enter-active img,
+.fade-enter-active img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+</style>
