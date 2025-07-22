@@ -4,7 +4,7 @@ export const usePayment = defineStore("payment", {
   state: () => {
     return {
       visaCheckRef: '',
-
+      isProcessing: false
     }
   },
 

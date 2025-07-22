@@ -196,6 +196,8 @@ onMounted(() => {
     <!-- Loading overlay -->
     <Loading
       v-model:active="state.isLoading"
+      loader="bars"
+      color="#07f7b6"
       :can-cancel="false"
       :on-cancel="() => {}"
       :is-full-page="false"

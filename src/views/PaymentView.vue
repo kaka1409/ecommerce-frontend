@@ -1,12 +1,18 @@
 <script setup>
-  import { computed } from 'vue'
-  import { useOrder } from '@/stores/order'
-  import { useUserInfo } from '@/stores/userInfo'
   import ViewPaymentHeader from '@/components/ViewPaymentHeader.vue'
+
+  // Packages
   import  axios  from 'axios'
   import hostURL from '@/configs/env'
+  import { computed } from 'vue'
   import { useToast } from 'vue-toastification'
   import { useRouter } from 'vue-router'
+  import Loading from 'vue-loading-overlay';
+  import 'vue-loading-overlay/dist/css/index.css'
+
+  // Stores
+  import { useOrder } from '@/stores/order'
+  import { useUserInfo } from '@/stores/userInfo'
   import { usePayment } from '@/stores/payment'
 
   const router = useRouter()
@@ -19,20 +25,24 @@
   const finalTotal = computed(() => {
     return (parseFloat(orderState.totalPrice)).toFixed(2)
   })
-  console.log(finalTotal.value)
+
   const accessToken = localStorage.getItem('accessToken')
-  const makePayment = async () => {
+
+  const processPayment = async () => {
+    paymentState.isProcessing = true
+
     try {
-      const orderId = orderState.id
+      const visaCheckRef = paymentState.visaCheckRef
+
       if (accessToken) {
-        const response = await axios.post(`${hostURL}/api/v1/payments`,
+        const response = await axios.post(`${hostURL}/api/v1/payments/process`,
           {
-            "orderId": orderId,
-            "totalAmount": finalTotal.value
+            "visaCheckReference": visaCheckRef,
           },
           {
             headers: {
               "Accept": "*/*",
+              "Content-Type": "application/json",
               "Authorization": `Bearer ${accessToken}`,
             },
           }
@@ -40,35 +50,97 @@
 
         const responseBody = response.data
 
-
-        if (responseBody.status === 201) {
+        if (responseBody.status === 200) {
+          // Success
           toast.success(responseBody.message)
-          paymentState.visaCheckRef = responseBody.data.visaCheckRef
           console.log(responseBody.data)
-          // router.push(`/paymentSuccess`)
         } else {
           toast.error(responseBody.message)
           console.error(responseBody.message)
-          // router.push(`/paymentError`)
-
         }
       } else {
         toast.error("You are not logged in")
         console.error("You are not logged in")
-        // router.push(`/paymentError`)
-
       }
     } catch (error) {
-      // toast.error(error.response.data.message)
-      console.log(error)
-      // router.push(`/paymentError`)
+      if (error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.message)
+      }
+    } finally {
+      paymentState.isProcessing = false
     }
-    console.log('Processing payment for total:', finalTotal.value)
-    // You can add API call here to process the payment
+  }
+
+  const makePayment = async () => {
+    try {
+      const orderId = orderState.id
+      const totalAmount = finalTotal.value
+
+      if (accessToken) {
+        const response = await axios.post(`${hostURL}/api/v1/payments`,
+          {
+            "orderId": orderId,
+            "totalAmount": totalAmount
+          },
+          {
+            headers: {
+              "Accept": "*/*",
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${accessToken}`,
+            },
+          }
+        )
+
+        const responseBody = response.data
+
+        if (responseBody.status === 201) {
+          // Success
+          // toast.success(responseBody.message)
+          paymentState.visaCheckRef = responseBody.data.visaCheckRef
+          console.log(responseBody.data)
+
+        } else {
+          toast.error(responseBody.message)
+          console.error(responseBody.message)
+        }
+      } else {
+        toast.error("You are not logged in")
+        console.error("You are not logged in")
+      }
+
+    } catch (error) {
+      if (error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.message)
+      }
+      console.log(error)
+    } finally {
+      processPayment()
+    }
   }
 </script>
 
 <template>
+  <div
+    v-if="paymentState.isProcessing"
+    class="fixed top-0 left-0 right-0 bottom-0 z-50 flex items-center flex-col justify-center bg-white bg-opacity-50"
+  >
+    <span
+      class="text-[#07f7b6] font-bold text-xl text-center"
+    >
+      Processing payment, please wait...
+    </span>
+    <div class="h-25 opacity-0">_</div>
+    <Loading
+      :active="paymentState.isProcessing"
+      loader="bars"
+      color="#07f7b6"
+    />
+  </div>
+
   <div class="max-w-sm mx-auto bg-[#F2F6FF] h-full overflow-y-scroll font-poppins">
     <!-- Header -->
     <ViewPaymentHeader/>

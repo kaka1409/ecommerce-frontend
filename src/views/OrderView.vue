@@ -5,6 +5,8 @@
 
   import axios from 'axios';
   import hostURL from '@/configs/env';
+  import Loading from 'vue-loading-overlay';
+  import 'vue-loading-overlay/dist/css/index.css'
   import { onMounted } from 'vue';
   import { useRouter } from 'vue-router'; const router = useRouter()
   import { useToast } from 'vue-toastification'; const toast = useToast()
@@ -45,6 +47,8 @@
   }
 
   const placeOrder =  async () => {
+    orderState.isOrderProcessing = true
+
     try {
       const addressID = orderState.defaultAddress.id
       const items = orderState.orderitems.map(item => {
@@ -74,11 +78,19 @@
 
 
         if (responseBody.status === 201) {
+          // Success
           toast.success(responseBody.message)
           console.log(responseBody.data)
+
+          // Update order state
           orderState.id = responseBody.data.orderId
           orderState.totalPrice = responseBody.data.totalAmount
-          router.push(`/payment`)
+
+          // Redirect to payment page
+          setTimeout(() => {
+            router.push(`/payment`)
+          }, 2000);
+
         } else {
           toast.error(responseBody.message)
           console.error(responseBody.message)
@@ -90,6 +102,8 @@
     } catch (error) {
       // toast.error(error.response.data.message)
       console.error(error)
+    } finally {
+      orderState.isOrderProcessing = false
     }
   }
 
@@ -100,6 +114,23 @@
 </script>
 
 <template>
+  <div
+    v-if="orderState.isOrderProcessing"
+    class="fixed top-0 left-0 right-0 bottom-0 z-50 flex items-center flex-col justify-center bg-gray-200 bg-opacity-50"
+  >
+    <span
+      class="text-[#07f7b6] font-bold text-xl text-center"
+    >
+      Processing order, please wait...
+    </span>
+    <div class="h-25 opacity-0">_</div>
+    <Loading
+      :active="orderState.isOrderProcessing"
+      loader="bars"
+      color="#07f7b6"
+    />
+  </div>
+
   <div class="max-w-sm mx-auto bg-white h-full overflow-y-scroll font-poppins">
     <!-- Header -->
     <ViewOrderHeader :totalItems="orderState.orderitems.length" />

@@ -106,7 +106,7 @@
     <div class="grid grid-cols-2 gap-2 p-4 pt-8 h-175 overflow-y-scroll">
       <Loading
         :active="state.isLoading"
-        loader="dots"
+        loader="bars"
         color="#07f7b6"
       />
 

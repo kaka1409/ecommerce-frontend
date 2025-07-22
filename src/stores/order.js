@@ -16,7 +16,8 @@ export const useOrder = defineStore("order", {
       defaultAddressID: 0,
       orderitems:[],
       discount: 0.15,
-      totalPrice: 0
+      totalPrice: 0,
+      isOrderProcessing: false
     }
   },
 

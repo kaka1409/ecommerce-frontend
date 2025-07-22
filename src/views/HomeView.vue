@@ -4,10 +4,11 @@
   import NavigationBar from '@/components/NavigationBar.vue';
   import ProductList from '@/components/ProductList.vue';
 
-  import { onMounted, reactive } from 'vue';
-  import { useToast } from 'vue-toastification'; const toast = useToast()
-  import hostURL from '@/configs/env';
   import axios from 'axios';
+  import hostURL from '@/configs/env';
+  import { onMounted, reactive } from 'vue';
+  import { useRouter } from 'vue-router'; const router = useRouter()
+  import { useToast } from 'vue-toastification'; const toast = useToast()
   import { useUserInfo } from '@/stores/userInfo'; const userInfoState = useUserInfo()
 
   const state = reactive({
@@ -15,7 +16,7 @@
   })
 
   const search =  () => {
-    window.location.href = `/search?pageNo=1&pageSize=10&keyword=${state.searchQuery}`
+    router.push(`/search?pageNo=1&pageSize=10&keyword=${state.searchQuery}`);
   }
 
   const accessToken = localStorage.getItem('accessToken')
