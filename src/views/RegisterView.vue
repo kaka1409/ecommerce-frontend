@@ -6,7 +6,8 @@
   // packages
   import hostURL from '@/configs/env';
   import axios from 'axios';
-  import { useToast } from 'vue-toastification';
+  import { useToast } from 'vue-toastification'; const toast = useToast()
+  import { useRouter } from 'vue-router'; const router = useRouter()
   import { reactive } from 'vue';
   import { Form, Field, ErrorMessage, useForm } from 'vee-validate';
   import * as yup from 'yup';
@@ -82,8 +83,6 @@
     state.step = step
   }
 
-  const toast = useToast()
-
   const register = async () => {
     try {
       const response = axios.post(`${hostURL}/api/v1/users/register`,
@@ -113,7 +112,7 @@
 
         // Redirect to login
         setTimeout(() => {
-          window.location.href = "/login"
+          router.push("/login")
         }, 1000)
 
       } else {

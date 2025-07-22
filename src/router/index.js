@@ -8,6 +8,9 @@ import Search from "@/views/SearchResultView.vue"
 import ProductView from '@/views/ProductView.vue'
 import Cart from "@/views/CartView.vue"
 import Order from "@/views/OrderView.vue"
+import PaymentView from "@/views/PaymentView.vue"
+import PaymentSuccess from '@/views/PaymentSuccess.vue'
+import PaymentFailed from '@/views/PaymentFailed.vue'
 import Wallet from "@/views/WalletView.vue"
 import User from "@/views/UserView.vue"
 import Setting from "@/views/SettingView.vue"
@@ -69,6 +72,21 @@ const router = createRouter({
       path: '/setting',
       name: 'setting',
       component: Setting
+    },
+    {
+      path: '/payment',
+      name: 'payment',
+      component: PaymentView
+    },
+    {
+      path: '/payment/success',
+      name: 'paymentSuccess',
+      component: PaymentSuccess
+    },
+    {
+      path: '/payment/failed',
+      name: 'paymentFailed',
+      component: PaymentFailed
     },
     {
       path: '/:catchAll(.*)',

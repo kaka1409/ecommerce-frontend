@@ -6,11 +6,12 @@
 
   // packages
   import hostURL from '@/configs/env';
-  import { useToast } from 'vue-toastification'; const toast = useToast();
   import axios from 'axios';
   import { reactive, ref } from 'vue';
-  import { Form, Field, ErrorMessage, useForm } from 'vee-validate';
   import * as yup from 'yup';
+  import { Form, Field, ErrorMessage, useForm } from 'vee-validate';
+  import { useRouter } from 'vue-router'; const router = useRouter()
+  import { useToast } from 'vue-toastification'; const toast = useToast();
 
   // Form rules
   const schema = yup.object({
@@ -65,7 +66,7 @@
 
         // Redirect to home page
         setTimeout(() => {
-          window.location.href = '/home'
+          router.push('/home')
         }, 1000)
 
       } else {
@@ -77,7 +78,7 @@
       if (error.response) {
         toast.error(error.response.data.message)
       } else {
-        toast.error("Connection timed out")
+        toast.error("Connection timed out or blocked my CORS policy")
       }
       throw new Error("Error logging in ", error);
     }
