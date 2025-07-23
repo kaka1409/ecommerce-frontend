@@ -13,6 +13,7 @@ const formatAmount = (amount) => {
 </script>
 
 <template>
+  <RouterLink to=""></RouterLink>
   <article class="flex items-center justify-between py-3 border-b border-gray-100 last:border-b-0">
     <!-- Transaction Icon and Details -->
     <div class="flex items-center space-x-3">
@@ -31,7 +32,7 @@ const formatAmount = (amount) => {
 
       <div>
         <h3 class="font-medium text-gray-900">
-          Order #{{ transaction.id }}
+          Payment #{{ transaction.id }}
         </h3>
         <p class="text-sm text-gray-500">
           {{ transaction.date }}
