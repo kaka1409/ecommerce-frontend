@@ -19,7 +19,7 @@ defineEmits(['add-card'])
     <div class="overflow-x-auto scrollbar-hide">
       <div class="flex space-x-4 pb-2">
         <!-- Credit Card -->
-        <PaymentMethodCard 
+        <PaymentMethodCard
           v-for="card in paymentMethods"
           :key="card.id"
           :card="card"
@@ -30,7 +30,7 @@ defineEmits(['add-card'])
     <!-- Add New Card Button -->
     <button
       @click="$emit('add-card')"
-      class="w-full h-[45px] bg-green-400 rounded-xl flex items-center justify-center text-white font-semibold text-lg hover:bg-green-500 transition-colors mt-4 mb-8"
+      class="w-full h-[45px] bg-[#07f7b6] rounded-xl flex items-center justify-center text-white font-semibold text-lg hover:bg-green-500 transition-colors mt-4 mb-8"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

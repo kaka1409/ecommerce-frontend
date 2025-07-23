@@ -31,48 +31,56 @@ const transactions = ref([
     id: '92287157',
     date: 'April 19 2020 12:31',
     amount: -14.00,
-    type: 'purchase'
+    type: 'purchase',
+    status: 'success'
   },
   {
-    id: '92287157',
+    id: '92287158',
     date: 'April 19 2020 12:31',
     amount: -37.00,
-    type: 'purchase'
+    type: 'purchase',
+    status: 'failed'
   },
   {
-    id: '92287157',
+    id: '92287159',
     date: 'April 19 2020 12:31',
     amount: -21.00,
-    type: 'purchase'
+    type: 'purchase',
+    status: 'success'
   },
   {
-    id: '92287157',
+    id: '92287160',
     date: 'April 19 2020 12:31',
     amount: -75.00,
-    type: 'purchase'
+    type: 'purchase',
+    status: 'success'
   },
   {
-    id: '92287157',
+    id: '92287161',
     date: 'April 19 2020 12:31',
     amount: -214.00,
-    type: 'purchase'
+    type: 'purchase',
+    status: 'failed'
   },
   {
-    id: '92287157',
+    id: '92287162',
     date: 'April 19 2020 12:31',
     amount: -53.00,
-    type: 'purchase'
+    type: 'purchase',
+    status: 'success'
   },
     {
-    id: '92287157',
+    id: '92287163',
     date: 'April 19 2020 12:31',
     amount: -214.00,
-    type: 'purchase'
+    type: 'purchase',
+    status: 'success'
   },  {
-    id: '92287157',
+    id: '92287164',
     date: 'April 19 2020 12:31',
     amount: -214.00,
-    type: 'purchase'
+    type: 'purchase',
+    status: 'failed'
   }
 ]);
 
