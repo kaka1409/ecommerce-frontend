@@ -13,7 +13,7 @@ export const useCartItemList = defineStore("cartItemList", {
   },
 
   getters: {
-
+    totalCartItems: (state) => state.cartItems.length
   },
 
   actions: {

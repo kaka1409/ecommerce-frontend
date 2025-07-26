@@ -1,50 +1,54 @@
 <script setup>
-import { onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import axios from 'axios'
-import { useToast } from 'vue-toastification'
+  import axios from 'axios'
+  import hostURL from '@/configs/env'
+  import { useReceipt } from '@/stores/receipt'
+  import { onMounted } from 'vue'
+  import { useRoute, useRouter } from 'vue-router'
+  import { useToast } from 'vue-toastification'
 
-const toast = useToast()
-const router = useRouter()
-const route = useRoute()
-const receiptId = route.params.id
-import hostURL from '@/configs/env'
-import { useReceipt } from '@/stores/receipt'
-const receiptState = useReceipt()
-const fetchReceipt = async () => {
-  try {
-    const accessToken = localStorage.getItem('accessToken')
-    if (accessToken){
-      const response = await axios.get(`${hostURL}/api/v1/receipt/${receiptId}`, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Accept': '*/*'
+  const receiptId = route.params.id
+  const toast = useToast()
+  const router = useRouter()
+  const route = useRoute()
+  const receiptState = useReceipt()
 
+  const fetchReceipt = async () => {
+    try {
+      const accessToken = localStorage.getItem('accessToken')
+      if (accessToken){
+        const response = await axios.get(`${hostURL}/api/v1/receipt/${receiptId}`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+          'Accept': '*/*'
+        }
+      })
 
-      }
-    })
-      const responseBody = response.data
-      if (responseBody.status === 200 && responseBody.data) {
+        const responseBody = response.data
 
-        receiptState.finalPrice = responseBody.data.finalPrice
-        receiptState.paymentDate = responseBody.data.paymentDate
-        receiptState.visaCheckRef = responseBody.data.visaCheckRef
+        if (responseBody.status === 200 && responseBody.data) {
+          // success
+          receiptState.finalPrice = responseBody.data.finalPrice
+          receiptState.paymentDate = responseBody.data.paymentDate
+          receiptState.visaCheckRef = responseBody.data.visaCheckRef
+
+        } else {
+          toast.error('No receipt data found')
+          console.error('No receipt data found in response')
+        }
+
       } else {
-        toast.error('No receipt data found')
-        console.error('No receipt data found in response')
+        toast.error('You need to logged in')
+        console.error('You need to logged in')
       }
 
-    } else {
-      toast.error('You need to logged in')
-      console.error('You need to logged in')
+    } catch (err) {
+      toast.error(err.response.data.message || 'Failed to fetch receipt')
+      console.error('Failed to fetch receipt:', err)
     }
-
-  } catch (err) {
-    toast.error(err.response.data.message || 'Failed to fetch receipt')
-    console.error('Failed to fetch receipt:', err)
   }
-}
-onMounted(fetchReceipt)
+  onMounted(() => {
+    fetchReceipt()
+  })
 </script>
 
 <template>
@@ -84,7 +88,7 @@ onMounted(fetchReceipt)
       <div class="space-y-4 text-sm text-gray-600">
         <div class="flex justify-between">
           <span>References Number</span>
-          <span class="text-black font-sm">{{ receiptState.visaCheckRef }}</span>
+          <span class="text-black font-sm text-right">{{ receiptState.visaCheckRef }}</span>
         </div>
         <div class="flex justify-between">
           <span>Date</span>

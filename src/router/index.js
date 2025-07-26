@@ -14,8 +14,7 @@ import PaymentFailed from '@/views/PaymentFailed.vue'
 import Wallet from "@/views/WalletView.vue"
 import User from "@/views/UserView.vue"
 import Setting from "@/views/SettingView.vue"
-import ReceiptView from '@/views/ReceiptView.vue'
-import ViewReciept  from          '@/views/ViewReciept.vue'
+import ViewReciept from '@/views/ViewReciept.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -89,11 +88,6 @@ const router = createRouter({
       path: '/payment/failed',
       name: 'paymentFailed',
       component: PaymentFailed
-    },
-    {
-      path: '/receipt',
-      name: 'receipt',
-      component: ReceiptView
     },
     {
       path: '/:catchAll(.*)',
