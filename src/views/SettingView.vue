@@ -1,6 +1,7 @@
 <script setup>
   // icons
   import LogoutIcon from '@/assets/icons/LogoutIcon.vue';
+  import ViewSettingsHeader from '@/components/ViewSettingsHeader.vue';
 
   import hostURL from '@/configs/env';
   import axios from 'axios';
@@ -46,6 +47,7 @@
 
 <template>
   <div class="relative top-0 left-0 h-full">
+    <ViewSettingsHeader />
     <div>
       Setting page
     </div>
