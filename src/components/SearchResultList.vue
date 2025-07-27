@@ -57,7 +57,7 @@
         if (error.response) {
           toast.error(error.response.data.message)
         } else {
-          toast.error("Connection timed out")
+          toast.error(error.name + ": " + error.message)
         }
         console.error("Error calling search API", error)
       } finally {

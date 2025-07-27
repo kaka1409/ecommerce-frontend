@@ -41,7 +41,11 @@
         console.error("You are not logged in")
       }
     } catch (error) {
-      toast.error(error.response.data.message)
+      if (error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.name + ": " + error.message)
+      }
       console.error(error)
     } finally {
       orderState.isPreparing = false
@@ -100,7 +104,11 @@
         console.error("You are not logged in")
       }
     } catch (error) {
-      // toast.error(error.response.data.message)
+      if (error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.name + ": " + error.message)
+      }
       console.error(error)
     } finally {
       orderState.isOrderProcessing = false

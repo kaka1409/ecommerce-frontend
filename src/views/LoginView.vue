@@ -38,9 +38,6 @@
 
   const login = async () => {
     try {
-      // Radmin  http://26.16.186.88/api/v1/users/login
-      // Tailscale    http://100.81.52.73/api/v1/users/login
-
       const response = axios.post(`${hostURL}/api/v1/users/login`,
         {
           "email": formData.email,
@@ -78,7 +75,7 @@
       if (error.response) {
         toast.error(error.response.data.message)
       } else {
-        toast.error("Connection timed out or blocked my CORS policy")
+        toast.error(error.name + ": " + error.message)
       }
       throw new Error("Error logging in ", error);
     }

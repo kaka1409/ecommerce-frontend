@@ -62,7 +62,11 @@
       }
 
     } catch (error) {
-      toast.error(error.response.data.message)
+      if (error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.name + ": " + error.message)
+      }
       console.error("Error adding product to cart:", error);
     }
   };

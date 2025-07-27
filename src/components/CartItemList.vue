@@ -147,10 +147,14 @@
         toast.error(res.data.message)
         console.error('Error when load the cart:', res)
       }
-    } catch (err) {
+    } catch (error) {
       // Error
-      toast.error(err.response.data.message)
-      console.error('Error when load the cart:', err)
+      if (error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.name + ": " + error.message)
+      }
+      console.error('Error when load the cart:', error)
     } finally {
       state.isLoading = false
     }

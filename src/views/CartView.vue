@@ -136,7 +136,11 @@
       }
     } catch (error) {
       // Error
-      toast.error(error.response.data.message)
+      if (error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.name + ": " + error.message)
+      }
       console.error(`Error removing ${itemsToRemoveLength} items from cart`, error)
     }
   }

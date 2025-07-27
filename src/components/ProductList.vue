@@ -64,8 +64,13 @@
 
       } catch (error) {
         // Error handling
-        toast.error(error.response.data.message)
+        if (error.response) {
+          toast.error(error.response.data.message)
+        } else {
+          toast.error(error.name + ": " + error.message)
+        }
         throw new Error("Error fetching products list from API", error);
+        
       } finally {
         state.isLoading = false
       }

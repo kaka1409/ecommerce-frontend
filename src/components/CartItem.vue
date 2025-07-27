@@ -175,7 +175,11 @@
         console.error("No access token found, make sure you have an account and logged in")
       }
     } catch (error) {
-      toast.error(error.response.data.message)
+      if (error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.name + ": " + error.message)
+      }
       console.error(`Error changing quantity of ${props.product.name}`, error)
     }
   }
@@ -214,7 +218,11 @@
         console.error("No access token found, make sure you have an account and logged in")
       }
     } catch (error) {
-      toast.error(error.response.data.message)
+      if (error.response) {
+        toast.error(error.response.data.message)
+      } else {
+        toast.error(error.name + ": " + error.message)
+      }
       console.error(`Error removing ${props.product.name} from cart`, error)
     }
   }

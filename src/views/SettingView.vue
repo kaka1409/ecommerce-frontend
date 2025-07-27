@@ -38,8 +38,12 @@
       }
 
     } catch (error) {
+      if (error.response) {
         toast.error(error.response.data.message)
-        throw new Error("Error making logout request", error);
+      } else {
+        toast.error(error.name + ": " + error.message)
+      }
+      throw new Error("Error making logout request", error);
     }
   }
 
