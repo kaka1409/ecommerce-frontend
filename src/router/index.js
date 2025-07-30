@@ -1,17 +1,43 @@
 
 import {createRouter, createWebHistory} from 'vue-router'
 
-import Home from "@/views/Home.vue"
-import Login from "@/views/Login.vue"
-import Register from "@/views/Register.vue"
+import Login from "@/views/LoginView.vue"
+import Register from "@/views/RegisterView.vue"
+import Home from "@/views/HomeView.vue"
+import Search from "@/views/SearchResultView.vue"
+import ProductView from '@/views/ProductView.vue'
+import Cart from "@/views/CartView.vue"
+import Order from "@/views/OrderView.vue"
+import PaymentView from "@/views/PaymentView.vue"
+import PaymentSuccess from '@/views/PaymentSuccess.vue'
+import PaymentFailed from '@/views/PaymentFailed.vue'
+import Wallet from "@/views/WalletView.vue"
+import User from "@/views/UserView.vue"
+import Setting from "@/views/SettingView.vue"
+import ViewReciept from '@/views/ViewReciept.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
+      name: 'index',
+      component: Home
+    },
+    {
+      path: '/home',
       name: 'home',
       component: Home
+    },
+    {
+      path: '/search',
+      name: 'search',
+      component: Search
+    },
+    {
+      path: '/product/:id',
+      name: 'product',
+      component: ProductView
     },
     {
       path: '/login',
@@ -22,7 +48,57 @@ const router = createRouter({
       path: '/register',
       name: 'register',
       component: Register
+    },
+    {
+      path: '/cart',
+      name: 'cart',
+      component: Cart
+    },
+    {
+      path: '/order',
+      name: 'order',
+      component: Order
+    },
+    {
+      path: '/wallet',
+      name: 'wallet',
+      component: Wallet
+    },
+    {
+      path: '/user',
+      name: 'user',
+      component: User
+    },
+    {
+      path: '/setting',
+      name: 'setting',
+      component: Setting
+    },
+    {
+      path: '/payment',
+      name: 'payment',
+      component: PaymentView
+    },
+    {
+      path: '/payment/success',
+      name: 'paymentSuccess',
+      component: PaymentSuccess
+    },
+    {
+      path: '/payment/failed',
+      name: 'paymentFailed',
+      component: PaymentFailed
+    },
+    {
+      path: '/:catchAll(.*)',
+      redirect: '/'
+    },
+    {
+      path: '/ViewReciept/:id',
+      name: 'ViewReciept',
+      component: ViewReciept
     }
+
   ]
 })
 
