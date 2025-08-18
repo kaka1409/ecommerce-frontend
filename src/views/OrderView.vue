@@ -89,7 +89,7 @@
           console.log(responseBody.data)
 
           // Update order state
-          orderState.id = responseBody.data.orderId
+          orderState.orderCode = responseBody.data.orderCode
           orderState.totalPrice = responseBody.data.totalAmount
 
           // Redirect to payment page

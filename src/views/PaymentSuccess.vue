@@ -6,26 +6,26 @@
   import hostURL from '@/configs/env';
   import { usePayment } from '@/stores/payment';
   import { useToast } from 'vue-toastification';
+
   const toast = useToast();
   const paymentState = usePayment();
   const receiptState = useReceipt();
+
   const createReceipt = async () => {
   try {
     const accessToken = localStorage.getItem('accessToken')
     if (accessToken){
-      const response = await axios.post(`${hostURL}/api/v1/receipt`,{
+      const response = await axios.post(`${hostURL}/api/v1/receipts`,{
         "visaCheckRef": paymentState.visaCheckRef
       }, {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
         'Accept': '*/*'
-
-
       }
     })
       const responseBody = response.data
       if (responseBody.status === 201 && responseBody.data) {
-        receiptState.id = responseBody.data.id
+        receiptState.id = responseBody.data.orderCode
       } else {
         toast.error('No receipt data found')
         console.error('No receipt data found in response')

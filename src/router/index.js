@@ -90,13 +90,13 @@ const router = createRouter({
       component: PaymentFailed
     },
     {
-      path: '/:catchAll(.*)',
-      redirect: '/'
-    },
-    {
       path: '/ViewReciept/:id',
       name: 'ViewReciept',
       component: ViewReciept
+    },
+    {
+      path: '/:catchAll(.*)',
+      redirect: '/'
     }
 
   ]

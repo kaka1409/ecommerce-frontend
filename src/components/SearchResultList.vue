@@ -6,83 +6,21 @@
   import Loading from 'vue-loading-overlay';
   import 'vue-loading-overlay/dist/css/index.css';
 
-  import hostURL from '@/configs/env';
-  import axios from 'axios'
-  import { onMounted, reactive, defineProps } from 'vue';
-  import { useToast } from 'vue-toastification'; const toast = useToast()
-
-  const props = defineProps({
-    query: String,
-    pageNo: Number,
-    pageSize: Number,
-    totalPages: Number
-  })
-
-  const state = reactive({
-    isLoading: true,
-    products: [],
-    searchQuery: props.query,
-    pageNo: props.pageNo,
-    pageSize: props.pageSize,
-    totalPages: props.totalPages
-  })
-
-  const getSearchResults = async (pageNo) => {
-      try {
-        const accessToken = localStorage.getItem('accessToken')
-
-        if (accessToken) {
-          const response = await axios.get(`${hostURL}/api/v1/products?pageNo=${pageNo}&pageSize=${state.pageSize}&keyword=${state.searchQuery}`, {
-            headers: {
-              'Accept': '*/*',
-              'Authorization': `Bearer ${accessToken}`
-            }
-          })
-
-          const axiosReponse = await response.data
-
-          if (axiosReponse.status === 200) {
-            state.products = axiosReponse.data.items
-            state.totalPages = axiosReponse.data.totalPages
-
-          } else {
-            toast.error(axiosReponse.message)
-          }
-        } else {
-          toast.error("No access token found")
-          console.error("No access token found, make sure you have an account and logged in")
-        }
-
-      } catch (error) {
-        if (error.response) {
-          toast.error(error.response.data.message)
-        } else {
-          toast.error(error.name + ": " + error.message)
-        }
-        console.error("Error calling search API", error)
-      } finally {
-        state.isLoading = false
-      }
-    }
+  import { useSearch } from '@/stores/search'; const searchState = useSearch()
 
   const nextPage = () => {
-    if (state.pageNo < state.totalPages) {
-      state.pageNo++
-      getSearchResults(state.pageNo)
+    if (searchState.pageNo < searchState.totalPages) {
+      searchState.pageNo++
+      searchState.getSearchResults()
     }
   }
 
   const previousPage = () => {
-    if (state.pageNo > 1 && state.pageNo <= state.totalPages) {
-      state.pageNo--
-      getSearchResults(state.pageNo)
+    if (searchState.pageNo > 1 && searchState.pageNo <= searchState.totalPages) {
+      searchState.pageNo--
+      searchState.getSearchResults()
     }
   }
-
-  onMounted( () => {
-      getSearchResults(state.pageNo)
-    }
-  )
 
 </script>
 
@@ -98,17 +36,17 @@
     </div>
 
     <Loading
-      :active="state.isLoading"
+      :active="searchState.isLoading"
       loader="bars"
       color="#07f7b6"
     />
 
     <div
-      v-if="state.products.length !== 0 && state.totalPages !== 0"
+      v-if="searchState.products.length !== 0 && searchState.totalPages !== 0"
       class="grid grid-cols-2 gap-2 p-4 pt-8 h-175 overflow-y-scroll"
     >
       <ProductItem
-        v-for="product in state.products"
+        v-for="product in searchState.products"
         :key="product.id"
         :productObject="product"
       />
@@ -139,7 +77,7 @@
       </button>
 
       <div>
-        <span>{{ state.pageNo }} of {{ state.totalPages }}</span>
+        <span>{{ searchState.pageNo }} of {{ searchState.totalPages }}</span>
       </div>
 
       <button

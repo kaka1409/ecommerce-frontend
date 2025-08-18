@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import {formatDate} from '@/utils/format.js'
-import {formatTime} from '@/utils/format.js'
+import {formatDate, formatTime} from '@/utils/date.js'
+
 export const useReceipt = defineStore("receipt", {
   state: () => {
     return {

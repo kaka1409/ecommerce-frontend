@@ -6,17 +6,15 @@
 
   import axios from 'axios';
   import hostURL from '@/configs/env';
-  import { onMounted, reactive } from 'vue';
+  import { onMounted } from 'vue';
+
   import { useRouter } from 'vue-router'; const router = useRouter()
   import { useToast } from 'vue-toastification'; const toast = useToast()
   import { useUserInfo } from '@/stores/userInfo'; const userInfoState = useUserInfo()
-
-  const state = reactive({
-    searchQuery: '',
-  })
+  import { useSearch } from '@/stores/search'; const searchState = useSearch()
 
   const search =  () => {
-    router.push(`/search?pageNo=1&pageSize=10&keyword=${state.searchQuery}`);
+    router.push(`/search?pageNo=1&pageSize=10&keyword=${searchState.searchQuery}`);
   }
 
   const accessToken = localStorage.getItem('accessToken')
@@ -81,7 +79,7 @@
       <div class="flex items-center justify-center w-60 bg-[#f8f8f8] rounded-full font-poppins text-md text-gray-900 ">
         <button
           @click="search"
-          :disabled="state.searchQuery === ''"
+          :disabled="searchState.searchQuery === ''"
         >
           <SearchIcon />
         </button>
@@ -89,7 +87,7 @@
           class="inline-block w-[80%] p-2 focus:outline-none "
           type="text"
           placeholder="Search products"
-          v-model="state.searchQuery"
+          v-model="searchState.searchQuery"
         >
       </div>
     </div>

@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 export const useOrder = defineStore("order", {
   state: () => {
     return {
-      id:'',
+      orderCode:'',
       fullname: '',
       phone: '',
       address: [],

@@ -87,13 +87,13 @@
     paymentState.isProcessing = true
 
     try {
-      const orderId = orderState.id
+      const orderCode = orderState.orderCode
       const totalAmount = finalTotal.value
 
       if (accessToken) {
         const response = await axios.post(`${hostURL}/api/v1/payments`,
           {
-            "orderId": orderId,
+            "orderCode": orderCode,
             "totalAmount": totalAmount
           },
           {
@@ -153,7 +153,7 @@
     />
   </div>
 
-  <div class="max-w-sm mx-auto bg-[#F2F6FF] h-full overflow-y-scroll font-poppins">
+  <div class="max-w-sm mx-auto bg-gray-100 h-full overflow-y-scroll font-poppins">
     <!-- Header -->
     <ViewPaymentHeader/>
 

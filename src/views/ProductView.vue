@@ -299,22 +299,22 @@ onMounted(() => {
           <!-- Quantity Row -->
           <div class="flex items-center justify-between">
             <label class="block font-semibold text-xl">Quantity</label>
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-4">
               <button
                 @click="decreaseQuantity"
-                class="text-black px-3 py-2 text-xl font-bold hover:bg-gray-300 transition rounded"
+                class="text-black text-xl font-semibold hover:bg-gray-300 transition rounded"
                 :disabled="state.quantity <= 1"
               >
                 -
               </button>
               <span
-                class="text-lg bg-[#e7f0fd] text-black px-4 py-2 rounded-lg font-medium shadow-inner min-w-[60px] text-center"
+                class="text-lg bg-gray-100 px-4 py-1 text-black rounded-lg font-medium shadow-inner text-center"
               >
                 {{ state.quantity }}
               </span>
               <button
                 @click="increaseQuantity"
-                class="text-black px-3 py-2 text-xl font-bold hover:bg-gray-300 transition rounded"
+                class="text-black text-xl font-semibold hover:bg-gray-300 transition rounded"
                 :disabled="state.quantity >= state.product.quantity"
               >
                 +

@@ -52,14 +52,15 @@
       )
 
       const axiosResponse = await response
-      const data = axiosResponse.data
+      const body = axiosResponse.data
 
-      if (data.status === 200) {
+      if (body.status === 200) {
         // Success
         toast.success("Logged in successful")
 
         // Store access token
-        localStorage.setItem('accessToken', data.accessToken)
+        localStorage.setItem('accessToken', body.data.accessToken)
+        localStorage.setItem('refreshToken', body.data.refreshToken)
 
         // Redirect to home page
         setTimeout(() => {
@@ -68,12 +69,12 @@
 
       } else {
         // Error handling here
-        toast.error(data.message)
+        toast.error(body.message)
         throw new Error("No data received")
       }
     } catch (error) {
       if (error.response) {
-        toast.error(error.response.data.message)
+        toast.error(error.response.body.message)
       } else {
         toast.error(error.name + ": " + error.message)
       }

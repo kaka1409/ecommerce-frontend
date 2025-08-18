@@ -4,24 +4,26 @@
   import NavigationBar from '@/components/NavigationBar.vue';
   import SearchResultList from '@/components/SearchResultList.vue';
 
-  import { reactive } from 'vue';
+  import { onMounted } from 'vue';
+
   import { useRouter } from 'vue-router'; const router = useRouter()
+  import { useSearch } from '@/stores/search'; const searchState = useSearch()
 
-  const searchParams = new URLSearchParams(window.location.search)
-
-  // console.log(searchParams.get('keyword'))
-
-  const state = reactive({
-    searchQuery: searchParams.get('keyword'),
-    searchResults: [],
-    totalPages: 0,
-    pageNo: parseInt(searchParams.get('pageNo')),
-    pageSize: parseInt(searchParams.get('pageSize'))
-  })
+  // const searchParams = new URLSearchParams(window.location.search)
 
   const search =  () => {
-    router.push(`/search?pageNo=1&pageSize=10&keyword=${state.searchQuery}`)
+    // searchState.searchQuery = searchParams.get('keyword')
+    // searchState.pageNo = parseInt(searchParams.get('pageNo'))
+    // searchState.pageSize = parseInt(searchParams.get('pageSize'))
+
+    router.push(`/search?pageNo=1&pageSize=10&keyword=${searchState.searchQuery}`)
+    searchState.getSearchResults()
   }
+
+  onMounted( () => {
+      searchState.getSearchResults()
+    }
+  )
 
 </script>
 
@@ -44,7 +46,7 @@
       <div class="flex items-center justify-center w-60 bg-[#f8f8f8] rounded-full font-poppins text-md text-gray-900 ">
         <button
           @click="search"
-          :disabled="state.searchQuery === ''"
+          :disabled="searchState.searchQuery === ''"
         >
           <SearchIcon />
         </button>
@@ -52,17 +54,12 @@
           class="inline-block w-[80%] p-2 focus:outline-none "
           type="text"
           placeholder="Search products"
-          v-model="state.searchQuery"
+          v-model="searchState.searchQuery"
         >
       </div>
     </div>
 
-    <SearchResultList
-      :query="state.searchQuery"
-      :pageNo="state.pageNo"
-      :pageSize="state.pageSize"
-      :totalPages="state.totalPages"
-    />
+    <SearchResultList />
 
     <NavigationBar />
   </div>

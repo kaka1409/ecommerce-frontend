@@ -126,6 +126,7 @@
       if (error.response) {
         toast.error(error.response.data.message)
       } else {
+        console.log(error)
         toast.error(error.name + ": " + error.message)
       }
       throw new Error("Error making register request", error);

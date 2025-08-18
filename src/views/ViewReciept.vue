@@ -6,17 +6,17 @@
   import { useRoute, useRouter } from 'vue-router'
   import { useToast } from 'vue-toastification'
 
+  const route = useRoute()
   const receiptId = route.params.id
   const toast = useToast()
   const router = useRouter()
-  const route = useRoute()
   const receiptState = useReceipt()
 
   const fetchReceipt = async () => {
     try {
       const accessToken = localStorage.getItem('accessToken')
       if (accessToken){
-        const response = await axios.get(`${hostURL}/api/v1/receipt/${receiptId}`, {
+        const response = await axios.get(`${hostURL}/api/v1/receipts/${receiptId}`, {
         headers: {
           'Authorization': `Bearer ${accessToken}`,
           'Accept': '*/*'
@@ -46,6 +46,7 @@
       console.error('Failed to fetch receipt:', err)
     }
   }
+
   onMounted(() => {
     fetchReceipt()
   })
